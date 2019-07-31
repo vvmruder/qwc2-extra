@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-// const isEmpty = require('lodash.isempty');
+const isEmpty = require('lodash.isempty');
 const axios = require('axios');
 const FileSaver = require('file-saver');
 const xml2js = require('xml2js');
@@ -221,7 +221,8 @@ class PlotInfoTool extends React.Component {
             y: point[1]
         };
         axios.get(serviceUrl, {params}).then(response => {
-            this.setState({plotInfo: response.data.plots, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
+            let plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null
+            this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
         }).catch(e => {});
     }
     queryPdf = (ev, infoEntry, queryUrl) => {
