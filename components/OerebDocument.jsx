@@ -203,8 +203,7 @@ class OerebDocument extends React.Component {
         let landOwnRestr = extract.RealEstate.RestrictionOnLandownership;
         let entry = landOwnRestr.find(entry => entry.Theme.Code === name);
         if(expandedTheme && entry && entry.Map && entry.Map.ReferenceWMS) {
-            let wmsUrl = "http://localhost:8088/ows/somap?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=Belastete%20Standorte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=561&WIDTH=1281&HEIGHT=638&BBOX=2610490.2916666665%2C1235286.6666666665%2C2624047.5416666665%2C1242038.833333333";
-            let parts = url.parse(wmsUrl/*entry.Map.ReferenceWMS*/, true);
+            let parts = url.parse(entry.Map.ReferenceWMS, true);
             let baseUrl = parts.protocol + '//' + parts.host + parts.pathname;
             let params = parts.query;
             let layer = {
