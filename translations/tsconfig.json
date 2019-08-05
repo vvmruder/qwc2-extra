@@ -1,0 +1,24 @@
+{
+  "languages": [
+    "de-CH",
+    "en-US"
+    ],
+    "strings": [
+        "appmenu.items.PlotInfoTool",
+        "appmenu.items.PlotInfoTool_comment",
+        "oereb.concernedThemes",
+        "oereb.notConcernedThemes",
+        "oereb.themeWithoutData",
+        "oereb.generalInformation",
+        "oereb.type",
+        "oereb.area",
+        "oereb.perc",
+        "oereb.regulations",
+        "oereb.legalbasis",
+        "oereb.responsibleoffice",
+        "oereb.responsibleauthority",
+        "oereb.fundations",
+        "oereb.generalinfo",
+        "plotinfotool.loading"
+    ]
+}

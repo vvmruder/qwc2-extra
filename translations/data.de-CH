@@ -1,0 +1,29 @@
+{
+  "locale": "de-DE",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "PlotInfoTool": "Grundstücksinformation",
+        "PlotInfoTool_comment": "ÖREB-Kataster"
+      }
+    },
+    "oereb": {
+      "concernedThemes": "Betroffene Themen",
+      "notConcernedThemes": "Nicht betroffene Themen",
+      "themeWithoutData": "Nicht verfügbare Themen",
+      "generalInformation": "Allgemeine und rechtliche Informationen",
+      "type": "Typ",
+      "area": "Fläche",
+      "perc": "Anteil",
+      "regulations": "Rechtsvorschriften",
+      "legalbasis": "Gesetzliche Grundlagen",
+      "responsibleoffice": "Zuständige Stelle",
+      "responsibleauthority": "Katasterverantwortliche Stelle",
+      "fundations": "Grundlagedaten",
+      "generalinfo": "Allgemeine Informationen"
+    },
+    "plotinfotool": {
+      "loading": "Daten werden geladen..."
+    }
+  }
+}
