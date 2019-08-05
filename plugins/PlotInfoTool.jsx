@@ -21,6 +21,8 @@ const Message = require("qwc2/components/I18N/Message");
 const ResizeableWindow = require('qwc2/components/ResizeableWindow');
 const Spinner = require('qwc2/components/Spinner');
 const Icon = require('qwc2/components/Icon');
+const {zoomToExtent} = require('qwc2/actions/map');
+const {UrlParams} = require("qwc2/utils/PermaLinkUtils");
 const VectorLayerUtils = require('qwc2/utils/VectorLayerUtils');
 const OerebDocument = require('../components/OerebDocument');
 require('./style/PlotInfoTool.css');
@@ -28,9 +30,10 @@ require('./style/PlotInfoTool.css');
 
 class PlotInfoTool extends React.Component {
     static propTypes = {
+        theme: PropTypes.object,
         toolLayers: PropTypes.array,
         selection: PropTypes.object,
-        mapCrs: PropTypes.string,
+        map: PropTypes.object,
         windowSize: PropTypes.object,
         currentTask: PropTypes.string,
         changeSelectionState: PropTypes.func,
@@ -38,6 +41,7 @@ class PlotInfoTool extends React.Component {
         addThemeSublayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
+        zoomToExtent: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
         oerebQueryFormat: PropTypes.string
     }
@@ -54,15 +58,29 @@ class PlotInfoTool extends React.Component {
         expandedInfoData: null,
         pendingPdfs: []
     }
+    constructor(props) {
+        super(props);
+        this.oerebQuery = {
+            key: "oereb",
+            title: "Öffentlich-rechtliche Eigentumsbeschränkungen",
+            query: this.props.oerebQueryFormat === "xml" ? "/oereb/xml/$egrid$" : "/oereb/json/$egrid$",
+            pdfQuery: "/oereb/pdf/$egrid$",
+            responseTransform: this.props.oerebQueryFormat === "xml" ? this.oerebXmlToJson : null
+        };
+    }
     componentWillReceiveProps(newProps) {
-        if(newProps.currentTask === 'PlotInfoTool' && this.props.currentTask !== 'PlotInfoTool') {
+        if(newProps.theme && !this.props.theme && UrlParams.getParam('oereb_egrid')) {
+            this.props.setCurrentTask('PlotInfoTool');
+            this.queryBasicInfoByEgrid(UrlParams.getParam('oereb_egrid'));
+            UrlParams.updateParams({oereb_egrid: undefined});
+        } else if(newProps.currentTask === 'PlotInfoTool' && this.props.currentTask !== 'PlotInfoTool') {
             this.activated();
         } else if(newProps.currentTask !== 'PlotInfoTool' && this.props.currentTask === 'PlotInfoTool') {
             this.deactivated();
         } else if(newProps.currentTask === 'PlotInfoTool' && newProps.selection.point &&
            newProps.selection !== this.props.selection)
         {
-            this.queryPointInfo(newProps.selection.point);
+            this.queryBasicInfoAtPoint(newProps.selection.point);
         }
     }
     componentDidUpdate(prevState) {
@@ -73,7 +91,7 @@ class PlotInfoTool extends React.Component {
                     role: LayerRole.SELECTION
                 };
                 let wkt = this.state.plotInfo[this.state.currentPlot].geom;
-                let feature = VectorLayerUtils.wktToGeoJSON(wkt, "EPSG:2056", this.props.mapCrs);
+                let feature = VectorLayerUtils.wktToGeoJSON(wkt, "EPSG:2056", this.props.map.projection);
                 feature.styleName = 'default';
                 feature.styleOptions = {
                     fillColor: [0, 0, 0, 0],
@@ -104,13 +122,7 @@ class PlotInfoTool extends React.Component {
     renderBody = () => {
         let plotServiceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '');
         let plot = this.state.plotInfo[this.state.currentPlot];
-        let infoQueries = [...this.props.infoQueries, {
-            key: "oereb",
-            title: "Öffentlich-rechtliche Eigentumsbeschränkungen",
-            query: this.props.oerebQueryFormat === "xml" ? "/oereb/xml/$egrid$" : "/oereb/json/$egrid$",
-            pdfQuery: "/oereb/pdf/$egrid$",
-            responseTransform: this.props.oerebQueryFormat === "xml" ? this.oerebXmlToJson : null
-        }];
+        let infoQueries = [...this.props.infoQueries, this.oerebQuery];
         return (
             <div role="body" className="plot-info-dialog-body">
                 <div className="plot-info-dialog-header">
@@ -214,7 +226,7 @@ class PlotInfoTool extends React.Component {
         this.setState({plotInfo: null, currentPlot: null, expandedInfo: null, expandedInfoData: null, pendingPdfs: []});
         this.props.changeSelectionState({geomType: null});
     }
-    queryPointInfo = (point) => {
+    queryBasicInfoAtPoint = (point) => {
         let serviceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '') + '/';
         let params = {
             x: point[0],
@@ -224,6 +236,21 @@ class PlotInfoTool extends React.Component {
             let plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null
             this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
         }).catch(e => {});
+    }
+    queryBasicInfoByEgrid = (egrid) => {
+        const serviceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '');
+        axios.get(serviceUrl + '/query/' + egrid).then(response => {
+            let plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null
+            this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
+            if(plotInfo) {
+                this.props.zoomToExtent(plotInfo[0].bbox, 'EPSG:2056');
+                let query = serviceUrl + this.oerebQuery.query.replace('$egrid$', egrid);
+                this.toggleEgridInfo(this.oerebQuery, query);
+            }
+        }).catch(e => {
+            alert("Query failed");
+            console.warn(e);
+        });
     }
     queryPdf = (ev, infoEntry, queryUrl) => {
         ev.stopPropagation();
@@ -268,7 +295,8 @@ class PlotInfoTool extends React.Component {
 
 const selector = state => ({
     selection: state.selection,
-    mapCrs: state.map.projection,
+    map: state.map,
+    theme: state.theme.current,
     currentTask: state.task.id
 });
 
@@ -280,7 +308,8 @@ module.exports = {
             setCurrentTask: setCurrentTask,
             addThemeSublayer: addThemeSublayer,
             addLayerFeatures: addLayerFeatures,
-            removeLayer: removeLayer
+            removeLayer: removeLayer,
+            zoomToExtent: zoomToExtent
         }
     )(PlotInfoTool),
     reducers: {
