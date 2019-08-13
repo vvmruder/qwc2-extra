@@ -87,12 +87,12 @@ class OerebDocument extends React.Component {
         let respoffices = {};
         for(let entry of entries) {
             for(let prov of this.ensureArray(entry.LegalProvisions)) {
-                regulations[prov.OfficialNumber || uuid.v1()] = {
+                regulations[this.localizedText(prov.TextAtWeb)] = {
                     label: this.localizedText(prov.Title) + (prov.OfficialNumber ? ", " + prov.OfficialNumber : ""),
                     link: this.localizedText(prov.TextAtWeb)
                 };
                 for(let ref of this.ensureArray(prov.Reference)) {
-                    legalbasis[ref.OfficialNumber || uuid.v1()] = {
+                    legalbasis[this.localizedText(prov.TextAtWeb)] = {
                         label: this.localizedText(ref.Title) + " (" + this.localizedText(ref.Abbreviation) + ")" + (ref.OfficialNumber ? ", " + ref.OfficialNumber : ""),
                         link: this.localizedText(ref.TextAtWeb)
                     };
