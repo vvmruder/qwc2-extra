@@ -205,11 +205,10 @@ class PlotInfoTool extends React.Component {
     setIframeContent = (iframe, html) => {
         if(!iframe.getAttribute("identify-content-set")) {
             iframe.setAttribute("identify-content-set", true);
-            var doc = iframe.contentDocument || iframe.contentWindow.document;
+            let doc = iframe.contentDocument || iframe.contentWindow.document;
             doc.open();
             doc.write(html);
             doc.close();
-            iframe.height = doc.body.scrollHeight + "px";
         }
     }
     activated = () => {
