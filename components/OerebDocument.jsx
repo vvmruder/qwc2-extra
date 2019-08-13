@@ -124,19 +124,19 @@ class OerebDocument extends React.Component {
                 <h1><Message msgId="oereb.regulations" /></h1>
                 <ul>
                     {Object.values(regulations).map((reg,idx) => (
-                        <li key={"reg" + idx}><a target="_blank" href={reg.link}>{reg.label} &#128279;</a></li>
+                        <li key={"reg" + idx}><a target="_blank" href={reg.link} title={reg.label}>&#128279; {reg.label}</a></li>
                     ))}
                 </ul>
                 <h1><Message msgId="oereb.legalbasis" /></h1>
                 <ul>
                     {Object.values(legalbasis).map((leg, idx) => (
-                        <li key={"leg" + idx}><a target="_blank" href={leg.link}>{leg.label} &#128279;</a></li>
+                        <li key={"leg" + idx}><a target="_blank" href={leg.link} title={leg.label}>&#128279; {leg.label}</a></li>
                     ))}
                 </ul>
                 <h1><Message msgId="oereb.responsibleoffice" /></h1>
                 <ul>
                     {Object.values(respoffices).map((rof, idx) => (
-                        <li key={"rof" + idx}><a target="_blank" href={rof.link}>{rof.label} &#128279;</a></li>
+                        <li key={"rof" + idx}><a target="_blank" href={rof.link} title={rof.label}>&#128279; {rof.label}</a></li>
                     ))}
                 </ul>
             </div>
