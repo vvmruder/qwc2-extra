@@ -46,7 +46,7 @@ class PlotInfoTool extends React.Component {
         oerebQueryFormat: PropTypes.string
     }
     static defaultProps = {
-        toolLayers: ["ch.gl.cadastre.av_grundbuchplan-bw"],
+        toolLayers: [],
         infoQueries: [],
         windowSize: {width: 500, height: 800},
         oerebQueryFormat: "json"
