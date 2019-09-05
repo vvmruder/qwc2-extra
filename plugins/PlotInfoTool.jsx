@@ -95,9 +95,12 @@ class PlotInfoTool extends React.Component {
             this.queryBasicInfoAtPoint(newProps.selection.point);
         }
     }
-    componentDidUpdate(prevState) {
+    componentDidUpdate(prevProps, prevState) {
         if(this.state.plotInfo) {
-            if(this.state.currentPlot !== prevState.currentPlot) {
+            if(
+                this.state.plotInfo !== prevState.plotInfo ||
+                this.state.currentPlot !== prevState.currentPlot
+            ) {
                 let layer = {
                     id: "plotselection",
                     role: LayerRole.SELECTION
@@ -113,7 +116,7 @@ class PlotInfoTool extends React.Component {
                 }
                 this.props.addLayerFeatures(layer, [feature], true);
             }
-        } else {
+        } else if(prevState.plotInfo && !this.state.plotInfo) {
             this.props.removeLayer("plotselection");
         }
     }
