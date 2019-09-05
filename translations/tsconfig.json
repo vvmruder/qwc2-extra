@@ -20,6 +20,7 @@
         "oereb.requestPdf",
         "oereb.fundations",
         "oereb.generalinfo",
-        "plotinfotool.loading"
+        "plotinfotool.loading",
+        "plotinfotool.failed"
     ]
 }

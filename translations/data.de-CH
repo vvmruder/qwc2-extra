@@ -24,7 +24,8 @@
       "generalinfo": "Allgemeine Informationen"
     },
     "plotinfotool": {
-      "loading": "Daten werden geladen..."
+      "loading": "Daten werden geladen...",
+      "failed": "Datenabfrage gescheitert"
     }
   }
 }
