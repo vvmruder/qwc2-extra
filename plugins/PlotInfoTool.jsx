@@ -229,10 +229,10 @@ class PlotInfoTool extends React.Component {
     }
     activated = () => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        this.props.changeSelectionState({geomType: 'Point', style: 'marker', styleOptions: {
-            iconSrc: assetsPath + '/img/plot-info-marker.png',
-            iconAnchor: [0.5, 0.5]
-        }, cursor: 'url("' + assetsPath + '/img/plot-info-cursor.png") 12 12, default'});
+        this.props.changeSelectionState({geomType: 'Point', style: 'default', styleOptions: {
+            fillColor: [0, 0, 0, 0],
+            strokeColor: [0, 0, 0, 0]
+        }, cursor: 'url("' + assetsPath + '/img/plot-info-marker.png") 12 12, default'});
         this.props.themeLayerRestorer(this.props.toolLayers, null, layers => {
             this.props.addThemeSublayer({sublayers: layers});
         });
