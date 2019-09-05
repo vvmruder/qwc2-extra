@@ -103,6 +103,27 @@ class OerebDocument extends React.Component {
                 link: entry.ResponsibleOffice.OfficeAtWeb
             }
         }
+        let legendSymbols = {};
+        for(let entry of entries) {
+            if(entry.SymbolRef in legendSymbols) {
+                if(legendSymbols[entry.SymbolRef].AreaShare && entry.AreaShare) {
+                    legendSymbols[entry.SymbolRef].AreaShare += entry.AreaShare;
+                } else if(entry.AreaShare) {
+                    legendSymbols[entry.SymbolRef].AreaShare = entry.AreaShare;
+                }
+                if(legendSymbols[entry.SymbolRef].PartInPercent && entry.PartInPercent) {
+                    legendSymbols[entry.SymbolRef].PartInPercent += entry.PartInPercent;
+                } else if(entry.PartInPercent) {
+                    legendSymbols[entry.SymbolRef].PartInPercent = entry.PartInPercent;
+                }
+            } else {
+                legendSymbols[entry.SymbolRef] = {
+                    Information: entry.Information,
+                    AreaShare: entry.AreaShare,
+                    PartInPercent: entry.PartInPercent
+                };
+            }
+        }
         return (
             <div className="oereb-document-theme-contents">
                 <table><tbody>
@@ -112,12 +133,12 @@ class OerebDocument extends React.Component {
                         <th><Message msgId="oereb.area" /></th>
                         <th><Message msgId="oereb.perc" /></th>
                     </tr>
-                    {entries.map((entry,idx) => (
+                    {Object.entries(legendSymbols).map(([symbol, data],idx) => (
                         <tr key={"leg" + idx}>
-                            <td>{this.localizedText(entry.Information)}</td>
-                            <td><img src={entry.SymbolRef} /></td>
-                            {entry.AreaShare ? (<td>{entry.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
-                            {entry.PartInPercent ? (<td>{entry.PartInPercent + "%"}</td>) : (<td>-</td>)}
+                            <td>{this.localizedText(data.Information)}</td>
+                            <td><img src={symbol} /></td>
+                            {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
+                            {data.PartInPercent ? (<td>{data.PartInPercent + "%"}</td>) : (<td>-</td>)}
                         </tr>
                     ))}
                 </tbody></table>
