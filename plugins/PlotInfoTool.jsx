@@ -15,6 +15,7 @@ const FileSaver = require('file-saver');
 const xml2js = require('xml2js');
 const ConfigUtils = require('qwc2/utils/ConfigUtils');
 const {changeSelectionState} = require('qwc2/actions/selection');
+const {clearSearch} = require('qwc2/actions/search');
 const {setCurrentTask} = require('qwc2/actions/task');
 const {LayerRole, addThemeSublayer, addLayerFeatures, removeLayer} = require('qwc2/actions/layers');
 const Message = require("qwc2/components/I18N/Message");
@@ -45,6 +46,7 @@ class PlotInfoTool extends React.Component {
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
         zoomToPoint: PropTypes.func,
+        clearSearch: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
         oerebQueryFormat: PropTypes.string
     }
@@ -244,6 +246,7 @@ class PlotInfoTool extends React.Component {
         this.props.changeSelectionState({geomType: null});
     }
     queryBasicInfoAtPoint = (point) => {
+        this.props.clearSearch();
         let serviceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '') + '/';
         let params = {
             x: point[0],
@@ -328,7 +331,8 @@ module.exports = {
             addThemeSublayer: addThemeSublayer,
             addLayerFeatures: addLayerFeatures,
             removeLayer: removeLayer,
-            zoomToPoint: zoomToPoint
+            zoomToPoint: zoomToPoint,
+            clearSearch: clearSearch
         }
     )(PlotInfoTool),
     reducers: {
