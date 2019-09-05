@@ -21,9 +21,11 @@ const Message = require("qwc2/components/I18N/Message");
 const ResizeableWindow = require('qwc2/components/ResizeableWindow');
 const Spinner = require('qwc2/components/Spinner');
 const Icon = require('qwc2/components/Icon');
-const {zoomToExtent} = require('qwc2/actions/map');
+const {zoomToPoint} = require('qwc2/actions/map');
 const {UrlParams} = require("qwc2/utils/PermaLinkUtils");
+const CoordinatesUtils = require('qwc2/utils/CoordinatesUtils');
 const LocaleUtils = require('qwc2/utils/LocaleUtils');
+const MapUtils = require('qwc2/utils/MapUtils');
 const VectorLayerUtils = require('qwc2/utils/VectorLayerUtils');
 const OerebDocument = require('../components/OerebDocument');
 require('./style/PlotInfoTool.css');
@@ -42,7 +44,7 @@ class PlotInfoTool extends React.Component {
         addThemeSublayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
-        zoomToExtent: PropTypes.func,
+        zoomToPoint: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
         oerebQueryFormat: PropTypes.string
     }
@@ -258,7 +260,9 @@ class PlotInfoTool extends React.Component {
             let plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null
             this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
             if(plotInfo) {
-                this.props.zoomToExtent(plotInfo[0].bbox, 'EPSG:2056');
+                let bounds = CoordinatesUtils.reprojectBbox(plotInfo[0].bbox, 'EPSG:2056', this.props.map.projection);
+                let zoom = MapUtils.getZoomForExtent(bounds, this.props.map.resolutions, this.props.map.size, 0, this.props.map.scales.length - 1) - 1;
+                this.props.zoomToPoint([0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])], zoom, 'EPSG:2056');
                 let url = serviceUrl + query.query.replace('$egrid$', egrid);
                 this.toggleEgridInfo(query, url);
             }
@@ -324,7 +328,7 @@ module.exports = {
             addThemeSublayer: addThemeSublayer,
             addLayerFeatures: addLayerFeatures,
             removeLayer: removeLayer,
-            zoomToExtent: zoomToExtent
+            zoomToPoint: zoomToPoint
         }
     )(PlotInfoTool),
     reducers: {
