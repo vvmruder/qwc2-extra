@@ -17,6 +17,7 @@
         "oereb.legalbasis",
         "oereb.responsibleoffice",
         "oereb.responsibleauthority",
+        "oereb.requestPdf",
         "oereb.fundations",
         "oereb.generalinfo",
         "plotinfotool.loading"

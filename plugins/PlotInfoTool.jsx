@@ -23,6 +23,7 @@ const Spinner = require('qwc2/components/Spinner');
 const Icon = require('qwc2/components/Icon');
 const {zoomToExtent} = require('qwc2/actions/map');
 const {UrlParams} = require("qwc2/utils/PermaLinkUtils");
+const LocaleUtils = require('qwc2/utils/LocaleUtils');
 const VectorLayerUtils = require('qwc2/utils/VectorLayerUtils');
 const OerebDocument = require('../components/OerebDocument');
 require('./style/PlotInfoTool.css');
@@ -51,6 +52,9 @@ class PlotInfoTool extends React.Component {
         windowSize: {width: 500, height: 800},
         oerebQueryFormat: "json"
     }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
     state = {
         plotInfo: null,
         currentPlot: null,
@@ -65,6 +69,7 @@ class PlotInfoTool extends React.Component {
             title: "Öffentlich-rechtliche Eigentumsbeschränkungen",
             query: this.props.oerebQueryFormat === "xml" ? "/oereb/xml/$egrid$" : "/oereb/json/$egrid$",
             pdfQuery: "/oereb/pdf/$egrid$",
+            pdfTooltip: "oereb.requestPdf",
             responseTransform: this.props.oerebQueryFormat === "xml" ? this.oerebXmlToJson : null
         };
     }
@@ -148,6 +153,7 @@ class PlotInfoTool extends React.Component {
                     {infoQueries.map((entry,idx) => {
                         let query = plotServiceUrl + entry.query.replace('$egrid$', plot.egrid);
                         let pdfQuery = entry.pdfQuery ? plotServiceUrl + entry.pdfQuery.replace('$egrid$', plot.egrid) : null;
+                        let pdfTooltip = entry.pdfTooltip ? LocaleUtils.getMessageById(this.context.messages, entry.pdfTooltip) : "";
                         return (
                             <div key={entry.key} className="plot-info-dialog-query">
                                 <div className="plot-info-dialog-query-title" onClick={() => this.toggleEgridInfo(entry, query)}>
@@ -155,7 +161,7 @@ class PlotInfoTool extends React.Component {
                                     <span>{entry.title}</span>
                                     {entry.pdfQuery ?
                                         this.state.pendingPdfs.includes(pdfQuery) ? (<Spinner />) :
-                                        (<Icon icon="pdf" onClick={ev => this.queryPdf(ev, entry, pdfQuery)} />)
+                                        (<Icon title={pdfTooltip} icon="pdf" onClick={ev => this.queryPdf(ev, entry, pdfQuery)} />)
                                      : null}
                                 </div>
                                 {this.state.expandedInfo === entry.key ? (
