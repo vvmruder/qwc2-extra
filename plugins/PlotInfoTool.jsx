@@ -70,14 +70,21 @@ class PlotInfoTool extends React.Component {
             query: this.props.oerebQueryFormat === "xml" ? "/oereb/xml/$egrid$" : "/oereb/json/$egrid$",
             pdfQuery: "/oereb/pdf/$egrid$",
             pdfTooltip: "oereb.requestPdf",
-            responseTransform: this.props.oerebQueryFormat === "xml" ? this.oerebXmlToJson : null
+            responseTransform: this.props.oerebQueryFormat === "xml" ? this.oerebXmlToJson : null,
+            urlKey: 'oereb_egrid'
         };
     }
     componentWillReceiveProps(newProps) {
-        if(newProps.theme && !this.props.theme && UrlParams.getParam('oereb_egrid')) {
-            this.props.setCurrentTask('PlotInfoTool');
-            this.queryBasicInfoByEgrid(UrlParams.getParam('oereb_egrid'));
-            UrlParams.updateParams({oereb_egrid: undefined});
+        if(newProps.theme && !this.props.theme) {
+            let infoQueries = [...newProps.infoQueries, this.oerebQuery];
+            for(let entry of infoQueries) {
+                if(entry.urlKey && UrlParams.getParam(entry.urlKey)) {
+                    this.props.setCurrentTask('PlotInfoTool');
+                    this.queryInfoByEgrid(entry, UrlParams.getParam(entry.urlKey));
+                    UrlParams.updateParams({[entry.urlKey]: undefined});
+                    break;
+                }
+            }
         } else if(newProps.currentTask === 'PlotInfoTool' && this.props.currentTask !== 'PlotInfoTool') {
             this.activated();
         } else if(newProps.currentTask !== 'PlotInfoTool' && this.props.currentTask === 'PlotInfoTool') {
@@ -242,15 +249,15 @@ class PlotInfoTool extends React.Component {
             this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
         }).catch(e => {});
     }
-    queryBasicInfoByEgrid = (egrid) => {
+    queryInfoByEgrid = (query, egrid) => {
         const serviceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '');
         axios.get(serviceUrl + '/query/' + egrid).then(response => {
             let plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null
             this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
             if(plotInfo) {
                 this.props.zoomToExtent(plotInfo[0].bbox, 'EPSG:2056');
-                let query = serviceUrl + this.oerebQuery.query.replace('$egrid$', egrid);
-                this.toggleEgridInfo(this.oerebQuery, query);
+                let url = serviceUrl + query.query.replace('$egrid$', egrid);
+                this.toggleEgridInfo(query, url);
             }
         }).catch(e => {
             alert("Query failed");
