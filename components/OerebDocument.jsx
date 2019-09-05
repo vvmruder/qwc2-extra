@@ -97,10 +97,10 @@ class OerebDocument extends React.Component {
                         link: this.localizedText(ref.TextAtWeb)
                     };
                 }
-            }
-            respoffices[entry.ResponsibleOffice.OfficeAtWeb] = {
-                label: this.localizedText(entry.ResponsibleOffice.Name),
-                link: entry.ResponsibleOffice.OfficeAtWeb
+                respoffices[prov.ResponsibleOffice.OfficeAtWeb] = {
+                    label: this.localizedText(prov.ResponsibleOffice.Name),
+                    link: prov.ResponsibleOffice.OfficeAtWeb
+                }
             }
         }
         let legendSymbols = {};
