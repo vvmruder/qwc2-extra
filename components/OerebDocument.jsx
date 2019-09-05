@@ -92,7 +92,7 @@ class OerebDocument extends React.Component {
                     link: this.localizedText(prov.TextAtWeb)
                 };
                 for(let ref of this.ensureArray(prov.Reference)) {
-                    legalbasis[this.localizedText(prov.TextAtWeb)] = {
+                    legalbasis[this.localizedText(ref.TextAtWeb)] = {
                         label: this.localizedText(ref.Title) + " (" + this.localizedText(ref.Abbreviation) + ")" + (ref.OfficialNumber ? ", " + ref.OfficialNumber : ""),
                         link: this.localizedText(ref.TextAtWeb)
                     };
