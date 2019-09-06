@@ -37,6 +37,11 @@ div.plot-info-dialog-header table td {
     padding: 0.125em 0.25em;
 }
 
+div.plot-info-dialog-header table td div {
+    max-height: 2.8em;
+    overflow: auto;
+}
+
 div.plot-info-dialog-query {
     margin: 0.5em 0;
     border: 1px solid @item_border@;
