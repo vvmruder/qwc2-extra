@@ -168,18 +168,19 @@ class PlotInfoTool extends React.Component {
                         let query = plotServiceUrl + entry.query.replace('$egrid$', plot.egrid);
                         let pdfQuery = entry.pdfQuery ? plotServiceUrl + entry.pdfQuery.replace('$egrid$', plot.egrid) : null;
                         let pdfTooltip = entry.pdfTooltip ? LocaleUtils.getMessageById(this.context.messages, entry.pdfTooltip) : "";
+                        let expanded = this.state.expandedInfo === entry.key;
                         return (
-                            <div key={entry.key} className="plot-info-dialog-query">
+                            <div key={entry.key} className={"plot-info-dialog-query " + (expanded ? "plot-info-dialog-query-expanded" : '')}>
                                 <div className="plot-info-dialog-query-title" onClick={() => this.toggleEgridInfo(entry, query)}>
-                                    <Icon icon={this.state.expandedInfo === entry.key ? "collapse" : "expand"} />
+                                    <Icon icon={expanded ? "collapse" : "expand"} />
                                     <span>{entry.title}</span>
                                     {entry.pdfQuery ?
                                         this.state.pendingPdfs.includes(pdfQuery) ? (<Spinner />) :
                                         (<Icon title={pdfTooltip} icon="pdf" onClick={ev => this.queryPdf(ev, entry, pdfQuery)} />)
                                      : null}
                                 </div>
-                                {this.state.expandedInfo === entry.key ? (
-                                    <div>
+                                {expanded ? (
+                                    <div className="plot-info-dialog-query-result">
                                         {!this.state.expandedInfoData ? this.renderWait() : this.state.expandedInfoData.failed ? this.renderError() : this.renderInfoData()}
                                     </div>
                                 ) : null}
