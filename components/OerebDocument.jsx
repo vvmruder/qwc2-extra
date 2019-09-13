@@ -139,7 +139,7 @@ class OerebDocument extends React.Component {
         }
         return (
             <div className="oereb-document-theme-contents">
-                {subthemes.reverse().map((subtheme, idx) => {
+                {subthemes.slice(0).reverse().map((subtheme, idx) => {
                     let subthemedata = legendSymbols[subtheme];
                     if(!subthemedata) {
                         return (
