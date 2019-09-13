@@ -167,7 +167,7 @@ class OerebDocument extends React.Component {
                             </tbody></table>
                         {subthemedata.fullLegend ? (
                             <div>
-                                <div className="oereb-document-toggle-fulllegend" onClick={ev => this.toggleFullLegend(fullLegendId)}><a href="#"><Message msgId={toggleLegendMsgId} /></a></div>
+                                <div className="oereb-document-toggle-fulllegend" onClick={ev => this.toggleFullLegend(fullLegendId)}><a><Message msgId={toggleLegendMsgId} /></a></div>
                                 {this.state.expandedLegend === fullLegendId ? (<div className="oereb-document-fulllegend"><img src={subthemedata.fullLegend} /></div>) : null}
                             </div>
                         ) : null}
