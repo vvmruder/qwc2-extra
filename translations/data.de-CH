@@ -23,8 +23,8 @@
       "requestPdf": "PDF-Katasterauszug anfordern",
       "fundations": "Grundlagedaten",
       "generalinfo": "Allgemeine Informationen",
-      "hidefulllegend": "Vollständige Legende einblenden",
-      "showfulllegend": "Vollständige Legende ausblenden"
+      "hidefulllegend": "Vollständige Legende ausblenden",
+      "showfulllegend": "Vollständige Legende einblenden"
     },
     "plotinfotool": {
       "loading": "Daten werden geladen...",
