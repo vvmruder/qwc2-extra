@@ -149,7 +149,7 @@ class OerebDocument extends React.Component {
                             </div>
                         );
                     }
-                    let fullLegendId = this.state.expandedTheme + (subtheme || "");
+                    let fullLegendId = this.state.expandedTheme + "_" + (subtheme || "");
                     let toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? "oereb.hidefulllegend" : "oereb.showfulllegend";
                     let subThemeLayer = this.props.layers.find(layer => layer.__oereb_subtheme === subtheme);
                     return (
