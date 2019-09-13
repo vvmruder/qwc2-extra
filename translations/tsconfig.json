@@ -6,6 +6,7 @@
     "strings": [
         "appmenu.items.PlotInfoTool",
         "appmenu.items.PlotInfoTool_comment",
+        "oereb.title",
         "oereb.concernedThemes",
         "oereb.notConcernedThemes",
         "oereb.themeWithoutData",

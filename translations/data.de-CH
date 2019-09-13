@@ -8,6 +8,7 @@
       }
     },
     "oereb": {
+      "title": "Öffentlich-rechtliche Eigentumsbeschränkungen",
       "concernedThemes": "Betroffene Themen",
       "notConcernedThemes": "Nicht betroffene Themen",
       "themeWithoutData": "Nicht verfügbare Themen",

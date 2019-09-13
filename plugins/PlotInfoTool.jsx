@@ -72,7 +72,7 @@ class PlotInfoTool extends React.Component {
         super(props);
         this.oerebQuery = {
             key: "oereb",
-            title: "Öffentlich-rechtliche Eigentumsbeschränkungen",
+            titleMsgId: "oereb.title",
             query: this.props.oerebQueryFormat === "xml" ? "/oereb/xml/$egrid$" : "/oereb/json/$egrid$",
             pdfQuery: "/oereb/pdf/$egrid$",
             pdfTooltip: "oereb.requestPdf",
@@ -175,7 +175,7 @@ class PlotInfoTool extends React.Component {
                             <div key={entry.key} className={"plot-info-dialog-query " + (expanded ? "plot-info-dialog-query-expanded" : '')}>
                                 <div className="plot-info-dialog-query-title" onClick={() => this.toggleEgridInfo(entry, query)}>
                                     <Icon icon={expanded ? "collapse" : "expand"} />
-                                    <span>{entry.title}</span>
+                                    <span>{entry.titleMsgId ? LocaleUtils.getMessageById(this.context.messages, entry.titleMsgId) : entry.title}</span>
                                     {entry.pdfQuery ?
                                         this.state.pendingPdfs.includes(pdfQuery) ? (<Spinner />) :
                                         (<Icon title={pdfTooltip} icon="pdf" onClick={ev => this.queryPdf(ev, entry, pdfQuery)} />)
