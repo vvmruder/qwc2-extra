@@ -9,10 +9,11 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const uuid = require('uuid');
 const url = require('url');
-const {LayerRole, addLayer, removeLayer} = require('qwc2/actions/layers');
+const {LayerRole, addLayer, removeLayer, changeLayerProperties} = require('qwc2/actions/layers');
 const LayerUtils = require('qwc2/utils/LayerUtils');
 const Icon = require('qwc2/components/Icon');
 const Message = require("qwc2/components/I18N/Message");
@@ -27,6 +28,7 @@ class OerebDocument extends React.Component {
         oerebDoc: PropTypes.object,
         addLayer: PropTypes.func,
         removeLayer: PropTypes.func,
+        changeLayerProperties: PropTypes.func,
         oerebConfig: PropTypes.object
     }
     state = {
@@ -140,9 +142,13 @@ class OerebDocument extends React.Component {
                 {Object.entries(legendSymbols).reverse().map(([subtheme, subthemedata],idx) => {
                     let fullLegendId = this.state.expandedTheme + (subtheme || "");
                     let toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? "oereb.hidefulllegend" : "oereb.showfulllegend";
+                    let subThemeLayer = this.props.layers.find(layer => layer.__oereb_subtheme === subtheme);
                     return (
                         <div key={"subtheme" + idx}>
-                            {subtheme ? (<div className="oereb-document-subtheme-title">{subtheme}</div>) : null}
+                            {subtheme ? (<div className="oereb-document-subtheme-title">
+                                {subThemeLayer ? (<Icon icon={subThemeLayer.visibility === true ? 'checked' : 'unchecked'} onClick={() => this.toggleThemeLayer(subThemeLayer)}/>) : null}
+                                {subtheme}
+                            </div>) : null}
                             <table><tbody>
                                 <tr>
                                     <th><Message msgId="oereb.type" /></th>
@@ -257,8 +263,9 @@ class OerebDocument extends React.Component {
         let landOwnRestr = extract.RealEstate.RestrictionOnLandownership;
 
         let entries = landOwnRestr.filter(entry => entry.Theme.Code === name).sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));
+        let subThemeLayers = new Set();
         for(let entry of entries) {
-            if(!entry.Map || !entry.Map.ReferenceWMS) {
+            if(!entry.Map || !entry.Map.ReferenceWMS || subThemeLayers.has(entry.SubTheme)) {
                 continue;
             }
             let parts = url.parse(entry.Map.ReferenceWMS, true);
@@ -280,14 +287,20 @@ class OerebDocument extends React.Component {
                 opacity: 255,
                 format: params.FORMAT,
                 params: {LAYERS: params.LAYERS},
-                __oereb_highlight: true
+                __oereb_highlight: true,
+                __oereb_subtheme: entry.SubTheme
             };
             this.props.addLayer(layer);
+            subThemeLayers.add(entry.SubTheme);
         }
     }
     toggleFullLegend = (legendId) => {
         let expandedLegend = this.state.expandedLegend === legendId ? null : legendId;
         this.setState({expandedLegend});
+    }
+    toggleThemeLayer = (subthemelayer) => {
+        let newlayer = assign({}, subthemelayer, {visibility: !subthemelayer.visibility});
+        this.props.changeLayerProperties(subthemelayer.uuid, newlayer);
     }
     localizedText = (el) => {
         if(isEmpty(el)) {
@@ -312,5 +325,6 @@ module.exports = connect(state => ({
     layers: state.layers.flat
 }), {
     addLayer: addLayer,
-    removeLayer: removeLayer
+    removeLayer: removeLayer,
+    changeLayerProperties: changeLayerProperties
 })(OerebDocument);

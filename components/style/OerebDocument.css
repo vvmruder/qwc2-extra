@@ -70,6 +70,12 @@ div.oereb-document-subtheme-title {
     font-weight: bold;
     background-color: @appmenu_bg1@;
     padding: 0.25em;
+    display: flex;
+    align-items: center;
+}
+
+div.oereb-document-subtheme-title span.icon {
+    margin-right: 0.5em;
 }
 
 div.oereb-document-toggle-fulllegend {
