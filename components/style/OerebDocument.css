@@ -125,6 +125,7 @@ div.oereb-document-theme-contents table tr td {
 div.oereb-document-theme-contents table tr th:not(:first-child),
 div.oereb-document-theme-contents table tr td:not(:first-child) {
     text-align: right;
+    width: 6em;
 }
 
 div.oereb-document-theme-contents h1 {
