@@ -66,6 +66,17 @@ div.oereb-document-theme-contents {
     padding: 0.25em;
 }
 
+div.oereb-document-subtheme-title {
+    font-weight: bold;
+    background-color: @appmenu_bg1@;
+    padding: 0.25em;
+}
+
+div.oereb-document-fulllegend {
+    padding: 0.25em;
+    font-size: small;
+}
+
 div.oereb-document-theme-contents table {
     width: 100%;
 }

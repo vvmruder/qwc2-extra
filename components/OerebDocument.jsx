@@ -26,11 +26,13 @@ class OerebDocument extends React.Component {
         layers: PropTypes.array,
         oerebDoc: PropTypes.object,
         addLayer: PropTypes.func,
-        removeLayer: PropTypes.func
+        removeLayer: PropTypes.func,
+        oerebConfig: PropTypes.object
     }
     state = {
         expandedSection: null,
-        expandedTheme: null
+        expandedTheme: null,
+        expandedLegend: null
     }
     componentWillUnmount() {
         this.removeHighlighLayer();
@@ -81,7 +83,8 @@ class OerebDocument extends React.Component {
     renderTheme = (name) => {
         let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = this.ensureArray(extract.RealEstate.RestrictionOnLandownership);
-        let entries = landOwnRestr.filter(entry => entry.Theme.Code === name);
+        let subthemes = (this.props.oerebConfig.subthemes || {})[name] || [];
+        let entries = landOwnRestr.filter(entry => entry.Theme.Code === name).sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));;
         let regulations = {};
         let legalbasis = {};
         let respoffices = {};
@@ -103,21 +106,29 @@ class OerebDocument extends React.Component {
                 }
             }
         }
+
         let legendSymbols = {};
         for(let entry of entries) {
-            if(entry.SymbolRef in legendSymbols) {
-                if(legendSymbols[entry.SymbolRef].AreaShare && entry.AreaShare) {
-                    legendSymbols[entry.SymbolRef].AreaShare += entry.AreaShare;
+            if(!(entry.SubTheme in legendSymbols)) {
+                legendSymbols[entry.SubTheme] = {
+                    symbols: {},
+                    fullLegend: (entry.Map || {}).LegendAtWeb
+                };
+            }
+            let subThemeSymbols = legendSymbols[entry.SubTheme].symbols;
+            if(entry.SymbolRef in subThemeSymbols) {
+                if(subThemeSymbols[entry.SymbolRef].AreaShare && entry.AreaShare) {
+                    subThemeSymbols[entry.SymbolRef].AreaShare += entry.AreaShare;
                 } else if(entry.AreaShare) {
-                    legendSymbols[entry.SymbolRef].AreaShare = entry.AreaShare;
+                    subThemeSymbols[entry.SymbolRef].AreaShare = entry.AreaShare;
                 }
-                if(legendSymbols[entry.SymbolRef].PartInPercent && entry.PartInPercent) {
-                    legendSymbols[entry.SymbolRef].PartInPercent += entry.PartInPercent;
+                if(subThemeSymbols[entry.SymbolRef].PartInPercent && entry.PartInPercent) {
+                    subThemeSymbols[entry.SymbolRef].PartInPercent += entry.PartInPercent;
                 } else if(entry.PartInPercent) {
-                    legendSymbols[entry.SymbolRef].PartInPercent = entry.PartInPercent;
+                    subThemeSymbols[entry.SymbolRef].PartInPercent = entry.PartInPercent;
                 }
             } else {
-                legendSymbols[entry.SymbolRef] = {
+                subThemeSymbols[entry.SymbolRef] = {
                     Information: entry.Information,
                     AreaShare: entry.AreaShare,
                     PartInPercent: entry.PartInPercent
@@ -126,22 +137,30 @@ class OerebDocument extends React.Component {
         }
         return (
             <div className="oereb-document-theme-contents">
-                <table><tbody>
-                    <tr>
-                        <th><Message msgId="oereb.type" /></th>
-                        <th></th>
-                        <th><Message msgId="oereb.area" /></th>
-                        <th><Message msgId="oereb.perc" /></th>
-                    </tr>
-                    {Object.entries(legendSymbols).map(([symbol, data],idx) => (
-                        <tr key={"leg" + idx}>
-                            <td>{this.localizedText(data.Information)}</td>
-                            <td><img src={symbol} /></td>
-                            {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
-                            {data.PartInPercent ? (<td>{data.PartInPercent + "%"}</td>) : (<td>-</td>)}
-                        </tr>
-                    ))}
-                </tbody></table>
+                {Object.entries(legendSymbols).reverse().map(([subtheme, subthemedata],idx) => (
+                    <div key={"subtheme" + idx}>
+                        {subtheme ? (<div className="oereb-document-subtheme-title">{subtheme}</div>) : null}
+                        <table><tbody>
+                            <tr>
+                                <th><Message msgId="oereb.type" /></th>
+                                <th></th>
+                                <th><Message msgId="oereb.area" /></th>
+                                <th><Message msgId="oereb.perc" /></th>
+                            </tr>
+                            {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => (
+                                <tr key={"leg" + jdx}>
+                                    <td>{this.localizedText(data.Information)}</td>
+                                    <td><img src={symbol} /></td>
+                                    {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
+                                    {data.PartInPercent ? (<td>{data.PartInPercent + "%"}</td>) : (<td>-</td>)}
+                                </tr>
+                            ))}
+                        </tbody></table>
+                    {subthemedata.fullLegend ? (
+                        <div className="oereb-document-fulllegend" onClick={ev => this.toggleFullLegend()}>Full legend</div>
+                    ) : null}
+                    </div>
+                ))}
                 <h1><Message msgId="oereb.regulations" /></h1>
                 <ul>
                     {Object.values(regulations).map((reg,idx) => (
@@ -203,27 +222,38 @@ class OerebDocument extends React.Component {
     toggleSection = (name) => {
         this.setState({
             expandedSection: this.state.expandedSection === name ? null : name,
-            expandedTheme: null
+            expandedTheme: null,
+            expandedLegend: null
         });
     }
     removeHighlighLayer = () => {
-        // Remove previous __oereb_highlight layer
-        let layer = this.props.layers.find(layer => layer.__oereb_highlight === true);
-        if(layer) {
+        // Remove previous __oereb_highlight layers
+        let layers = this.props.layers.filter(layer => layer.__oereb_highlight === true);
+        for(let layer of layers) {
             this.props.removeLayer(layer.id);
         }
     }
     toggleTheme = (name) => {
         let expandedTheme = this.state.expandedTheme === name ? null : name;
         this.setState({
-            expandedTheme: expandedTheme
+            expandedTheme: expandedTheme,
+            expandedLegend: null
         });
         this.removeHighlighLayer();
+        if(!expandedTheme) {
+            return;
+        }
+
+        let subthemes = (this.props.oerebConfig.subthemes || {})[name] || [];
 
         let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = extract.RealEstate.RestrictionOnLandownership;
-        let entry = landOwnRestr.find(entry => entry.Theme.Code === name);
-        if(expandedTheme && entry && entry.Map && entry.Map.ReferenceWMS) {
+
+        let entries = landOwnRestr.filter(entry => entry.Theme.Code === name).sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));
+        for(let entry of entries) {
+            if(!entry.Map || !entry.Map.ReferenceWMS) {
+                continue;
+            }
             let parts = url.parse(entry.Map.ReferenceWMS, true);
             let baseUrl = parts.protocol + '//' + parts.host + parts.pathname;
             let params = parts.query;

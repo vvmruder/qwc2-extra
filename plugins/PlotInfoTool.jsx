@@ -48,13 +48,15 @@ class PlotInfoTool extends React.Component {
         zoomToPoint: PropTypes.func,
         clearSearch: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
-        oerebQueryFormat: PropTypes.string
+        oerebQueryFormat: PropTypes.string,
+        oerebConfig: PropTypes.object
     }
     static defaultProps = {
         toolLayers: [],
         infoQueries: [],
         windowSize: {width: 500, height: 800},
-        oerebQueryFormat: "json"
+        oerebQueryFormat: "json",
+        oerebConfig: {}
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -213,7 +215,7 @@ class PlotInfoTool extends React.Component {
     }
     renderInfoData = () => {
         if(this.state.expandedInfo === 'oereb') {
-            return (<OerebDocument oerebDoc={this.state.expandedInfoData} />);
+            return (<OerebDocument oerebDoc={this.state.expandedInfoData} oerebConfig={this.props.oerebConfig} />);
         } else {
             let assetsPath = ConfigUtils.getConfigProp("assetsPath");
             let src = assetsPath + "/templates/blank.html";
@@ -280,7 +282,7 @@ class PlotInfoTool extends React.Component {
         this.setState({pendingPdfs: [...this.state.pendingPdfs, queryUrl]});
         axios.get(queryUrl).then(response => {
             let contentType = response.headers["content-type"];
-            FileSaver.saveAs(new Blob([response.data], {type: contentType}), infoEntry.title + '.pdf');
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), infoEntry.key + '.pdf');
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
         }).catch(e => {
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
