@@ -111,13 +111,14 @@ class OerebDocument extends React.Component {
 
         let legendSymbols = {};
         for(let entry of entries) {
-            if(!(entry.SubTheme in legendSymbols)) {
-                legendSymbols[entry.SubTheme] = {
+            let subTheme = entry.SubTheme || "";
+            if(!(subTheme in legendSymbols)) {
+                legendSymbols[subTheme] = {
                     symbols: {},
                     fullLegend: (entry.Map || {}).LegendAtWeb
                 };
             }
-            let subThemeSymbols = legendSymbols[entry.SubTheme].symbols;
+            let subThemeSymbols = legendSymbols[subTheme].symbols;
             if(entry.SymbolRef in subThemeSymbols) {
                 if(subThemeSymbols[entry.SymbolRef].AreaShare && entry.AreaShare) {
                     subThemeSymbols[entry.SymbolRef].AreaShare += entry.AreaShare;
