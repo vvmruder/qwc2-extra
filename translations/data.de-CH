@@ -22,7 +22,9 @@
       "responsibleauthority": "Katasterverantwortliche Stelle",
       "requestPdf": "PDF-Katasterauszug anfordern",
       "fundations": "Grundlagedaten",
-      "generalinfo": "Allgemeine Informationen"
+      "generalinfo": "Allgemeine Informationen",
+      "hidefulllegend": "Vollständige Legende einblenden",
+      "showfulllegend": "Vollständige Legende ausblenden"
     },
     "plotinfotool": {
       "loading": "Daten werden geladen...",

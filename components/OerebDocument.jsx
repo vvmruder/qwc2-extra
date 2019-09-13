@@ -137,30 +137,37 @@ class OerebDocument extends React.Component {
         }
         return (
             <div className="oereb-document-theme-contents">
-                {Object.entries(legendSymbols).reverse().map(([subtheme, subthemedata],idx) => (
-                    <div key={"subtheme" + idx}>
-                        {subtheme ? (<div className="oereb-document-subtheme-title">{subtheme}</div>) : null}
-                        <table><tbody>
-                            <tr>
-                                <th><Message msgId="oereb.type" /></th>
-                                <th></th>
-                                <th><Message msgId="oereb.area" /></th>
-                                <th><Message msgId="oereb.perc" /></th>
-                            </tr>
-                            {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => (
-                                <tr key={"leg" + jdx}>
-                                    <td>{this.localizedText(data.Information)}</td>
-                                    <td><img src={symbol} /></td>
-                                    {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
-                                    {data.PartInPercent ? (<td>{data.PartInPercent + "%"}</td>) : (<td>-</td>)}
+                {Object.entries(legendSymbols).reverse().map(([subtheme, subthemedata],idx) => {
+                    let fullLegendId = this.state.expandedTheme + (subtheme || "");
+                    let toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? "oereb.hidefulllegend" : "oereb.showfulllegend";
+                    return (
+                        <div key={"subtheme" + idx}>
+                            {subtheme ? (<div className="oereb-document-subtheme-title">{subtheme}</div>) : null}
+                            <table><tbody>
+                                <tr>
+                                    <th><Message msgId="oereb.type" /></th>
+                                    <th></th>
+                                    <th><Message msgId="oereb.area" /></th>
+                                    <th><Message msgId="oereb.perc" /></th>
                                 </tr>
-                            ))}
-                        </tbody></table>
-                    {subthemedata.fullLegend ? (
-                        <div className="oereb-document-fulllegend" onClick={ev => this.toggleFullLegend()}>Full legend</div>
-                    ) : null}
-                    </div>
-                ))}
+                                {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => (
+                                    <tr key={"leg" + jdx}>
+                                        <td>{this.localizedText(data.Information)}</td>
+                                        <td><img src={symbol} /></td>
+                                        {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
+                                        {data.PartInPercent ? (<td>{data.PartInPercent + "%"}</td>) : (<td>-</td>)}
+                                    </tr>
+                                ))}
+                            </tbody></table>
+                        {subthemedata.fullLegend ? (
+                            <div>
+                                <div className="oereb-document-toggle-fulllegend" onClick={ev => this.toggleFullLegend(fullLegendId)}><a href="#"><Message msgId={toggleLegendMsgId} /></a></div>
+                                {this.state.expandedLegend === fullLegendId ? (<div className="oereb-document-fulllegend"><img src={subthemedata.fullLegend} /></div>) : null}
+                            </div>
+                        ) : null}
+                        </div>
+                    );
+                })}
                 <h1><Message msgId="oereb.regulations" /></h1>
                 <ul>
                     {Object.values(regulations).map((reg,idx) => (
@@ -277,6 +284,10 @@ class OerebDocument extends React.Component {
             };
             this.props.addLayer(layer);
         }
+    }
+    toggleFullLegend = (legendId) => {
+        let expandedLegend = this.state.expandedLegend === legendId ? null : legendId;
+        this.setState({expandedLegend});
     }
     localizedText = (el) => {
         if(isEmpty(el)) {

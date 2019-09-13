@@ -22,7 +22,9 @@
       "responsibleauthority": "Responsible authority",
       "requestPdf": "Request PDF cadastre extract",
       "fundations": "Fundations",
-      "generalinfo": "General information"
+      "generalinfo": "General information",
+      "hidefulllegend": "Hide full legend",
+      "showfulllegend": "Show full legend"
     },
     "plotinfotool": {
       "loading": "Loading data...",

@@ -21,6 +21,8 @@
         "oereb.requestPdf",
         "oereb.fundations",
         "oereb.generalinfo",
+        "oereb.hidefulllegend",
+        "oereb.showfulllegend",
         "plotinfotool.loading",
         "plotinfotool.failed"
     ]

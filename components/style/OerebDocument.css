@@ -72,13 +72,18 @@ div.oereb-document-subtheme-title {
     padding: 0.25em;
 }
 
-div.oereb-document-fulllegend {
+div.oereb-document-toggle-fulllegend {
     padding: 0.25em;
     font-size: small;
 }
 
+div.oereb-document-fulllegend {
+    background-color: white;
+}
+
 div.oereb-document-theme-contents table {
     width: 100%;
+    background-color: white;
 }
 
 div.oereb-document-theme-contents table tr {
