@@ -66,12 +66,23 @@ div.oereb-document-theme-contents {
     padding: 0.25em;
 }
 
+div.oereb-document-subtheme-container {
+    border-bottom: 1px solid @item_border@;
+}
+
 div.oereb-document-subtheme-title {
     font-weight: bold;
     background-color: @appmenu_bg1@;
-    padding: 0.25em;
+    padding: 0.5em 0.25em;
     display: flex;
     align-items: center;
+}
+
+div.oereb-document-subtheme-emptytitle {
+    font-weight: bold;
+    background-color: @appmenu_bg1@;
+    padding: 0.5em 0.25em 0.5em 1.75em;
+    color: gray;
 }
 
 div.oereb-document-subtheme-title span.icon {

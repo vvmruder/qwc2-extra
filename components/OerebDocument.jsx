@@ -85,7 +85,7 @@ class OerebDocument extends React.Component {
     renderTheme = (name) => {
         let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = this.ensureArray(extract.RealEstate.RestrictionOnLandownership);
-        let subthemes = (this.props.oerebConfig.subthemes || {})[name] || [];
+        let subthemes = (this.props.oerebConfig.subthemes || {})[name] || [""];
         let entries = landOwnRestr.filter(entry => entry.Theme.Code === name).sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));;
         let regulations = {};
         let legalbasis = {};
@@ -139,12 +139,20 @@ class OerebDocument extends React.Component {
         }
         return (
             <div className="oereb-document-theme-contents">
-                {Object.entries(legendSymbols).reverse().map(([subtheme, subthemedata],idx) => {
+                {subthemes.reverse().map((subtheme, idx) => {
+                    let subthemedata = legendSymbols[subtheme];
+                    if(!subthemedata) {
+                        return (
+                            <div key={"subtheme" + idx} className="oereb-document-subtheme-container">
+                                <div className="oereb-document-subtheme-emptytitle">{subtheme}</div>
+                            </div>
+                        );
+                    }
                     let fullLegendId = this.state.expandedTheme + (subtheme || "");
                     let toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? "oereb.hidefulllegend" : "oereb.showfulllegend";
                     let subThemeLayer = this.props.layers.find(layer => layer.__oereb_subtheme === subtheme);
                     return (
-                        <div key={"subtheme" + idx}>
+                        <div key={"subtheme" + idx} className="oereb-document-subtheme-container">
                             {subtheme ? (<div className="oereb-document-subtheme-title">
                                 {subThemeLayer ? (<Icon icon={subThemeLayer.visibility === true ? 'checked' : 'unchecked'} onClick={() => this.toggleThemeLayer(subThemeLayer)}/>) : null}
                                 {subtheme}
