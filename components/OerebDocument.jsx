@@ -247,6 +247,7 @@ class OerebDocument extends React.Component {
             expandedTheme: null,
             expandedLegend: null
         });
+        this.removeHighlighLayer();
     }
     removeHighlighLayer = () => {
         // Remove previous __oereb_highlight layers
