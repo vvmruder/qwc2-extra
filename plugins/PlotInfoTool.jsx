@@ -280,7 +280,7 @@ class PlotInfoTool extends React.Component {
     queryPdf = (ev, infoEntry, queryUrl) => {
         ev.stopPropagation();
         this.setState({pendingPdfs: [...this.state.pendingPdfs, queryUrl]});
-        axios.get(queryUrl).then(response => {
+        axios.get(queryUrl, {responseType: 'blob'}).then(response => {
             let contentType = response.headers["content-type"];
             FileSaver.saveAs(new Blob([response.data], {type: contentType}), infoEntry.key + '.pdf');
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
