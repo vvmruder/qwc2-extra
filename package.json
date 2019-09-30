@@ -11,9 +11,11 @@
         "file-saver": "2.0.2",
         "lodash.isempty": "4.4.0",
         "prop-types": "15.7.2",
-        "react": "16.8.6",
-        "react-redux": "7.1.0",
         "xml2js": "0.4.19"
+    },
+    "peerDependencies": {
+      "react": ">=16.0.0",
+      "react-redux": ">=6.0.0"
     },
     "devDependencies": {
     },
