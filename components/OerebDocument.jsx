@@ -125,6 +125,11 @@ class OerebDocument extends React.Component {
                 } else if(entry.AreaShare) {
                     subThemeSymbols[entry.SymbolRef].AreaShare = entry.AreaShare;
                 }
+                if(subThemeSymbols[entry.SymbolRef].LengthShare && entry.LengthShare) {
+                    subThemeSymbols[entry.SymbolRef].LengthShare += entry.LengthShare;
+                } else if(entry.LengthShare) {
+                    subThemeSymbols[entry.SymbolRef].LengthShare = entry.LengthShare;
+                }
                 if(subThemeSymbols[entry.SymbolRef].PartInPercent && entry.PartInPercent) {
                     subThemeSymbols[entry.SymbolRef].PartInPercent += entry.PartInPercent;
                 } else if(entry.PartInPercent) {
@@ -134,6 +139,7 @@ class OerebDocument extends React.Component {
                 subThemeSymbols[entry.SymbolRef] = {
                     Information: entry.Information,
                     AreaShare: entry.AreaShare,
+                    LengthShare: entry.LengthShare,
                     PartInPercent: entry.PartInPercent
                 };
             }
@@ -152,6 +158,7 @@ class OerebDocument extends React.Component {
                     let fullLegendId = this.state.expandedTheme + "_" + (subtheme || "");
                     let toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? "oereb.hidefulllegend" : "oereb.showfulllegend";
                     let subThemeLayer = this.props.layers.find(layer => layer.__oereb_subtheme === subtheme);
+                    const hasLengthShare = Object.entries(subthemedata.symbols).find(([symbol, data]) => data.LengthShare) !== undefined;
                     return (
                         <div key={"subtheme" + idx} className="oereb-document-subtheme-container">
                             {subtheme ? (<div className="oereb-document-subtheme-title">
@@ -162,14 +169,14 @@ class OerebDocument extends React.Component {
                                 <tr>
                                     <th><Message msgId="oereb.type" /></th>
                                     <th></th>
-                                    <th><Message msgId="oereb.area" /></th>
+                                    <th><Message msgId={hasLengthShare ? 'oereb.length' : 'oereb.area'} /></th>
                                     <th><Message msgId="oereb.perc" /></th>
                                 </tr>
                                 {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => (
                                     <tr key={"leg" + jdx}>
                                         <td>{this.localizedText(data.Information)}</td>
                                         <td><img src={symbol} /></td>
-                                        {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : (<td>-</td>)}
+                                        {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : ( data.LengthShare ? (<td>{data.LengthShare}&nbsp;m</td>) : (<td>-</td>) )}
                                         {data.PartInPercent ? (<td>{data.PartInPercent.toFixed(2) + "%"}</td>) : (<td>-</td>)}
                                     </tr>
                                 ))}
