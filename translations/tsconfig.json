@@ -13,6 +13,7 @@
         "oereb.generalInformation",
         "oereb.type",
         "oereb.area",
+        "oereb.length",
         "oereb.perc",
         "oereb.regulations",
         "oereb.legalbasis",
