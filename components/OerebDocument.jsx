@@ -121,26 +121,26 @@ class OerebDocument extends React.Component {
             let subThemeSymbols = legendSymbols[subTheme].symbols;
             if(entry.SymbolRef in subThemeSymbols) {
                 if(subThemeSymbols[entry.SymbolRef].AreaShare && entry.AreaShare) {
-                    subThemeSymbols[entry.SymbolRef].AreaShare += entry.AreaShare;
+                    subThemeSymbols[entry.SymbolRef].AreaShare += this.ensureNumber(entry.AreaShare);
                 } else if(entry.AreaShare) {
-                    subThemeSymbols[entry.SymbolRef].AreaShare = entry.AreaShare;
+                    subThemeSymbols[entry.SymbolRef].AreaShare = this.ensureNumber(entry.AreaShare);
                 }
                 if(subThemeSymbols[entry.SymbolRef].LengthShare && entry.LengthShare) {
-                    subThemeSymbols[entry.SymbolRef].LengthShare += entry.LengthShare;
+                    subThemeSymbols[entry.SymbolRef].LengthShare += this.ensureNumber(entry.LengthShare);
                 } else if(entry.LengthShare) {
-                    subThemeSymbols[entry.SymbolRef].LengthShare = entry.LengthShare;
+                    subThemeSymbols[entry.SymbolRef].LengthShare = this.ensureNumber(entry.LengthShare);
                 }
                 if(subThemeSymbols[entry.SymbolRef].PartInPercent && entry.PartInPercent) {
-                    subThemeSymbols[entry.SymbolRef].PartInPercent += entry.PartInPercent;
+                    subThemeSymbols[entry.SymbolRef].PartInPercent += this.ensureNumber(entry.PartInPercent);
                 } else if(entry.PartInPercent) {
-                    subThemeSymbols[entry.SymbolRef].PartInPercent = entry.PartInPercent;
+                    subThemeSymbols[entry.SymbolRef].PartInPercent = this.ensureNumber(entry.PartInPercent);
                 }
             } else {
                 subThemeSymbols[entry.SymbolRef] = {
-                    Information: entry.Information,
-                    AreaShare: entry.AreaShare,
-                    LengthShare: entry.LengthShare,
-                    PartInPercent: entry.PartInPercent
+                    Information:entry.Information,
+                    AreaShare: this.ensureNumber(entry.AreaShare),
+                    LengthShare: this.ensureNumber(entry.LengthShare),
+                    PartInPercent: this.ensureNumber(entry.PartInPercent)
                 };
             }
         }
@@ -335,6 +335,9 @@ class OerebDocument extends React.Component {
     }
     ensureArray = (el) => {
         return el === undefined ? [] : Array.isArray(el) ? el : [el];
+    }
+    ensureNumber = (value) => {
+        return parseFloat(value) || 0;
     }
 };
 
