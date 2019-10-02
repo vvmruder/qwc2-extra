@@ -334,7 +334,7 @@ class OerebDocument extends React.Component {
         }
     }
     ensureArray = (el) => {
-        return Array.isArray(el) ? el : [el];
+        return el === undefined ? [] : Array.isArray(el) ? el : [el];
     }
 };
 
