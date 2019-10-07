@@ -49,11 +49,14 @@ class PlotInfoTool extends React.Component {
         clearSearch: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
         oerebQueryFormat: PropTypes.string,
-        oerebConfig: PropTypes.object
+        oerebConfig: PropTypes.object,
+        infoQueries: PropTypes.array,
+        infoPlugins: PropTypes.array
     }
     static defaultProps = {
         toolLayers: [],
         infoQueries: [],
+        infoPlugins: [],
         windowSize: {width: 500, height: 800},
         oerebQueryFormat: "json",
         oerebConfig: {}
@@ -82,7 +85,7 @@ class PlotInfoTool extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         if(newProps.theme && !this.props.theme) {
-            let infoQueries = [...newProps.infoQueries, this.oerebQuery];
+            let infoQueries = [...newProps.infoQueries, ...newProps.infoPlugins, this.oerebQuery];
             for(let entry of infoQueries) {
                 if(entry.urlKey && UrlParams.getParam(entry.urlKey)) {
                     this.props.setCurrentTask('PlotInfoTool');
@@ -143,7 +146,7 @@ class PlotInfoTool extends React.Component {
     renderBody = () => {
         let plotServiceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '');
         let plot = this.state.plotInfo[this.state.currentPlot];
-        let infoQueries = [...this.props.infoQueries, this.oerebQuery];
+        let infoQueries = [...this.props.infoQueries, ...this.props.infoPlugins, this.oerebQuery];
         return (
             <div role="body" className="plot-info-dialog-body">
                 <div className="plot-info-dialog-header">
@@ -167,7 +170,10 @@ class PlotInfoTool extends React.Component {
                 </div>
                 <div className="plot-info-dialog-queries">
                     {infoQueries.map((entry,idx) => {
-                        let query = plotServiceUrl + entry.query.replace('$egrid$', plot.egrid);
+                        let query = entry.query.replace('$egrid$', plot.egrid);
+                        if(!query.startsWith('http')) {
+                            query = plotServiceUrl + query;
+                        }
                         let pdfQuery = entry.pdfQuery ? plotServiceUrl + entry.pdfQuery.replace('$egrid$', plot.egrid) : null;
                         let pdfTooltip = entry.pdfTooltip ? LocaleUtils.getMessageById(this.context.messages, entry.pdfTooltip) : "";
                         let expanded = this.state.expandedInfo === entry.key;
@@ -214,8 +220,11 @@ class PlotInfoTool extends React.Component {
         );
     }
     renderInfoData = () => {
+        let infoPlugin = null;
         if(this.state.expandedInfo === 'oereb') {
             return (<OerebDocument oerebDoc={this.state.expandedInfoData} oerebConfig={this.props.oerebConfig} />);
+        } else if(infoPlugin = this.props.infoPlugins.find(entry => entry.key === this.state.expandedInfo)) {
+            return (<infoPlugin.component data={this.state.expandedInfoData} />);
         } else {
             let assetsPath = ConfigUtils.getConfigProp("assetsPath");
             let src = assetsPath + "/templates/blank.html";
