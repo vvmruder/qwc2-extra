@@ -82,11 +82,28 @@ class OerebDocument extends React.Component {
             </div>
         )
     }
+    collectConcernedThemes = (landOwnRestr, name) => {
+        let subthemes = [""];
+        let entries = landOwnRestr.filter(entry => entry.Theme.Code === name);
+        let isSubTheme = false;
+        if(!isEmpty(entries)) {
+            // Main theme match, order subthemes according to config
+            subthemes = (this.props.oerebConfig.subthemes || {})[name] || [""];
+            entries = entries.sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));
+        } else {
+            // Attempt to match by subtheme name
+            entries = landOwnRestr.filter(entry => entry.SubTheme === name);
+            if(!isEmpty(entries)) {
+                subthemes = [name];
+                isSubTheme = true;
+            }
+        }
+        return {entries, subthemes, isSubTheme};
+    }
     renderTheme = (name) => {
         let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = this.ensureArray(extract.RealEstate.RestrictionOnLandownership);
-        let subthemes = (this.props.oerebConfig.subthemes || {})[name] || [""];
-        let entries = landOwnRestr.filter(entry => entry.Theme.Code === name).sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));;
+        let {entries, subthemes, isSubTheme} = this.collectConcernedThemes(landOwnRestr, name);
         let regulations = {};
         let legalbasis = {};
         let respoffices = {};
@@ -161,7 +178,7 @@ class OerebDocument extends React.Component {
                     const hasLengthShare = Object.entries(subthemedata.symbols).find(([symbol, data]) => data.LengthShare) !== undefined;
                     return (
                         <div key={"subtheme" + idx} className="oereb-document-subtheme-container">
-                            {subtheme ? (<div className="oereb-document-subtheme-title">
+                            {subtheme && !isSubTheme ? (<div className="oereb-document-subtheme-title">
                                 {subThemeLayer ? (<Icon icon={subThemeLayer.visibility === true ? 'checked' : 'unchecked'} onClick={() => this.toggleThemeLayer(subThemeLayer)}/>) : null}
                                 {subtheme}
                             </div>) : null}
@@ -274,12 +291,10 @@ class OerebDocument extends React.Component {
             return;
         }
 
-        let subthemes = (this.props.oerebConfig.subthemes || {})[name] || [];
-
         let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = extract.RealEstate.RestrictionOnLandownership;
 
-        let entries = landOwnRestr.filter(entry => entry.Theme.Code === name).sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));
+        let {entries, subthemes, isSubTheme} = this.collectConcernedThemes(landOwnRestr, name);
         let subThemeLayers = new Set();
         for(let entry of entries) {
             if(!entry.Map || !entry.Map.ReferenceWMS || subThemeLayers.has(entry.SubTheme)) {
