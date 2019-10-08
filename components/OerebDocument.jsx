@@ -53,7 +53,7 @@ class OerebDocument extends React.Component {
     }
     getOerebDoc(oerebDoc) {
         if(typeof oerebDoc === "object") {
-            return this.props.oerebDoc;
+            return oerebDoc;
         } else {
             let json;
             let options = {
