@@ -17,14 +17,17 @@ Plugin for requesting plot information, including Swiss Public-law Restrictions 
         "toolLayers": ["Grundstücke"],
         "infoQueries": [
           {
-            "key": "plotdescr",
-            "title": "Grundstückbeschrieb",
-            "titleMsgId": "plotinfo.plotdescr",
-            "query": "/plot/$egrid$",
-            "pdfQuery": "/plotpdf/$egrid$",
-            "pdfTooltip": "plotinfo.plotdescrpdf",
-            "urlKey": "plotdescr",
-            "cfg": { ... }
+            "key": "oereb",
+            "titleMsgId": "oereb.title",
+            "query": "/oereb/json/$egrid$",
+            "pdfQuery": "/oereb/pdf/$egrid$",
+            "pdfTooltip": "oereb.requestPdf",
+            "urlKey": "oereb_egrid",
+            "cfg": {
+              "subthemes": {
+                "LandUsePlans": ["Grundnutzung", "Überlagerungen", "Linienbezogene Festlegungen", "Objektbezogene Festlegungen"]
+              }
+            }
           }
         ]
       }
@@ -49,8 +52,7 @@ Sample `PlotInfoToolPlugin` configuration, as can be defined in the `cfg` sectio
     PlotInfoToolPlugin: {
       themeLayerRestorer: require('./themeLayerRestorer'),
       customInfoComponents: {
-        "<key>": require('./plugins/CustomPlotInfoComponent'),
-        ...
+          oereb: require('qwc2-extra/components/OerebDocument')
       }
     }
 
