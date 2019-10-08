@@ -13,6 +13,7 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const uuid = require('uuid');
 const url = require('url');
+const xml2js = require('xml2js');
 const {LayerRole, addLayer, removeLayer, changeLayerProperties} = require('qwc2/actions/layers');
 const LayerUtils = require('qwc2/utils/LayerUtils');
 const Icon = require('qwc2/components/Icon');
@@ -25,22 +26,51 @@ const Lang = "de";
 class OerebDocument extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
-        oerebDoc: PropTypes.object,
+        oerebDoc: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object
+        ]),
         addLayer: PropTypes.func,
         removeLayer: PropTypes.func,
         changeLayerProperties: PropTypes.func,
-        oerebConfig: PropTypes.object
+        config: PropTypes.object
     }
     state = {
+        oerebDoc: null,
         expandedSection: null,
         expandedTheme: null,
         expandedLegend: null
     }
+    constructor(props) {
+        super(props);
+        this.state.oerebDoc = this.getOerebDoc(props.data);
+    }
+    componentWillReceiveProps(newProps) {
+        this.setState({oerebDoc: this.getOerebDoc(newProps.data)});
+    }
     componentWillUnmount() {
         this.removeHighlighLayer();
     }
+    getOerebDoc(oerebDoc) {
+        if(typeof oerebDoc === "object") {
+            return this.props.oerebDoc;
+        } else {
+            let json;
+            let options = {
+                tagNameProcessors: [xml2js.processors.stripPrefix],
+                valueProcessors: [(text) => decodeURIComponent(text)],
+                explicitArray: false
+            };
+            xml2js.parseString(oerebDoc, options, (err, result) => {
+                json = result;
+            });
+            // Case sensitivity difference between XML and JSON
+            json.GetExtractByIdResponse.extract = json.GetExtractByIdResponse.Extract;
+            return json;
+        }
+    }
     render() {
-        let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
+        let extract = this.state.oerebDoc.GetExtractByIdResponse.extract;
         return (
             <div className="oereb-document">
                 {this.renderSection("concernedThemes", this.renderConcernedThemes, this.ensureArray(extract.ConcernedTheme))}
@@ -88,7 +118,7 @@ class OerebDocument extends React.Component {
         let isSubTheme = false;
         if(!isEmpty(entries)) {
             // Main theme match, order subthemes according to config
-            subthemes = (this.props.oerebConfig.subthemes || {})[name] || [""];
+            subthemes = (this.props.config.subthemes || {})[name] || [""];
             entries = entries.sort((x, y) => subthemes.indexOf(x.SubTheme) - subthemes.indexOf(y.SubTheme));
         } else {
             // Attempt to match by subtheme name
@@ -101,7 +131,7 @@ class OerebDocument extends React.Component {
         return {entries, subthemes, isSubTheme};
     }
     renderTheme = (name) => {
-        let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
+        let extract = this.state.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = this.ensureArray(extract.RealEstate.RestrictionOnLandownership);
         let {entries, subthemes, isSubTheme} = this.collectConcernedThemes(landOwnRestr, name);
         let regulations = {};
@@ -291,7 +321,7 @@ class OerebDocument extends React.Component {
             return;
         }
 
-        let extract = this.props.oerebDoc.GetExtractByIdResponse.extract;
+        let extract = this.state.oerebDoc.GetExtractByIdResponse.extract;
         let landOwnRestr = extract.RealEstate.RestrictionOnLandownership;
 
         let {entries, subthemes, isSubTheme} = this.collectConcernedThemes(landOwnRestr, name);

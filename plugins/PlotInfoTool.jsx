@@ -12,7 +12,6 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const axios = require('axios');
 const FileSaver = require('file-saver');
-const xml2js = require('xml2js');
 const ConfigUtils = require('qwc2/utils/ConfigUtils');
 const {changeSelectionState} = require('qwc2/actions/selection');
 const {clearSearch} = require('qwc2/actions/search');
@@ -28,7 +27,6 @@ const CoordinatesUtils = require('qwc2/utils/CoordinatesUtils');
 const LocaleUtils = require('qwc2/utils/LocaleUtils');
 const MapUtils = require('qwc2/utils/MapUtils');
 const VectorLayerUtils = require('qwc2/utils/VectorLayerUtils');
-const OerebDocument = require('../components/OerebDocument');
 require('./style/PlotInfoTool.css');
 
 
@@ -48,18 +46,14 @@ class PlotInfoTool extends React.Component {
         zoomToPoint: PropTypes.func,
         clearSearch: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
-        oerebQueryFormat: PropTypes.string,
-        oerebConfig: PropTypes.object,
         infoQueries: PropTypes.array,
-        infoPlugins: PropTypes.array
+        customInfoComponents: PropTypes.object
     }
     static defaultProps = {
         toolLayers: [],
         infoQueries: [],
-        infoPlugins: [],
-        windowSize: {width: 500, height: 800},
-        oerebQueryFormat: "json",
-        oerebConfig: {}
+        customInfoComponents: {},
+        windowSize: {width: 500, height: 800}
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -71,22 +65,9 @@ class PlotInfoTool extends React.Component {
         expandedInfoData: null,
         pendingPdfs: []
     }
-    constructor(props) {
-        super(props);
-        this.oerebQuery = {
-            key: "oereb",
-            titleMsgId: "oereb.title",
-            query: this.props.oerebQueryFormat === "xml" ? "/oereb/xml/$egrid$" : "/oereb/json/$egrid$",
-            pdfQuery: "/oereb/pdf/$egrid$",
-            pdfTooltip: "oereb.requestPdf",
-            responseTransform: this.props.oerebQueryFormat === "xml" ? this.oerebXmlToJson : null,
-            urlKey: 'oereb_egrid'
-        };
-    }
     componentWillReceiveProps(newProps) {
         if(newProps.theme && !this.props.theme) {
-            let infoQueries = [...newProps.infoQueries, ...newProps.infoPlugins, this.oerebQuery];
-            for(let entry of infoQueries) {
+            for(let entry of newProps.infoQueries) {
                 if(entry.urlKey && UrlParams.getParam(entry.urlKey)) {
                     this.props.setCurrentTask('PlotInfoTool');
                     this.queryInfoByEgrid(entry, UrlParams.getParam(entry.urlKey));
@@ -146,7 +127,6 @@ class PlotInfoTool extends React.Component {
     renderBody = () => {
         let plotServiceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '');
         let plot = this.state.plotInfo[this.state.currentPlot];
-        let infoQueries = [...this.props.infoQueries, ...this.props.infoPlugins, this.oerebQuery];
         return (
             <div role="body" className="plot-info-dialog-body">
                 <div className="plot-info-dialog-header">
@@ -169,7 +149,7 @@ class PlotInfoTool extends React.Component {
                 )]))}
                 </div>
                 <div className="plot-info-dialog-queries">
-                    {infoQueries.map((entry,idx) => {
+                    {this.props.infoQueries.map((entry,idx) => {
                         let query = entry.query.replace('$egrid$', plot.egrid);
                         if(!query.startsWith('http')) {
                             query = plotServiceUrl + query;
@@ -220,11 +200,10 @@ class PlotInfoTool extends React.Component {
         );
     }
     renderInfoData = () => {
-        let infoPlugin = null;
-        if(this.state.expandedInfo === 'oereb') {
-            return (<OerebDocument oerebDoc={this.state.expandedInfoData} oerebConfig={this.props.oerebConfig} />);
-        } else if(infoPlugin = this.props.infoPlugins.find(entry => entry.key === this.state.expandedInfo)) {
-            return (<infoPlugin.component data={this.state.expandedInfoData} />);
+        if(this.props.customInfoComponents[this.state.expandedInfo]) {
+            let Component = this.props.customInfoComponents[this.state.expandedInfo];
+            let config = (this.props.infoQueries.find(entry => entry.key === this.state.expandedInfo) || {}).cfg || {};
+            return (<Component data={this.state.expandedInfoData} config={config} />);
         } else {
             let assetsPath = ConfigUtils.getConfigProp("assetsPath");
             let src = assetsPath + "/templates/blank.html";
@@ -310,26 +289,11 @@ class PlotInfoTool extends React.Component {
         } else {
             this.setState({expandedInfo: infoEntry.key, expandedInfoData: null});
             axios.get(queryUrl).then(response => {
-                let data = infoEntry.responseTransform ? infoEntry.responseTransform(response.data) : response.data;
-                this.setState({expandedInfoData: data});
+                this.setState({expandedInfoData: response.data});
             }).catch(e => {
                 this.setState({expandedInfoData: {"failed": true}});
             });
         }
-    }
-    oerebXmlToJson = (xml) => {
-        let json;
-        let options = {
-            tagNameProcessors: [xml2js.processors.stripPrefix],
-            valueProcessors: [(text) => decodeURIComponent(text)],
-            explicitArray: false
-        };
-        xml2js.parseString(xml, options, (err, result) => {
-            json = result;
-        });
-        // Case sensitivity difference between XML and JSON
-        json.GetExtractByIdResponse.extract = json.GetExtractByIdResponse.Extract;
-        return json;
     }
 };
 

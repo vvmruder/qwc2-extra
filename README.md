@@ -19,8 +19,12 @@ Plugin for requesting plot information, including Swiss Public-law Restrictions 
           {
             "key": "plotdescr",
             "title": "Grundstückbeschrieb",
+            "titleMsgId": "plotinfo.plotdescr",
             "query": "/plot/$egrid$",
-            "pdfQuery": null
+            "pdfQuery": "/plotpdf/$egrid$",
+            "pdfTooltip": "plotinfo.plotdescrpdf",
+            "urlKey": "plotdescr",
+            "cfg": { ... }
           }
         ]
       }
@@ -28,12 +32,15 @@ Plugin for requesting plot information, including Swiss Public-law Restrictions 
     [...]
 
  * `toolLayers`: List of layers to load when activating tool.
- * `infoQueries`: List of additional info queries to offer in the dialog (PLR cadastre query is built-in).
-   - `key`: A unique key name
-   - `title`: The human visible title
-   - `query`: The query to perform to retreive the info. Must return HTML, which is then rendered in an iframe. `$egrid$` is replaced with the EGRID of the current plot.
+ * `infoQueries`: List of additional info queries to offer in the dialog (PLR cadastre query is built-in). By default, these render some HTML data in an iframe. If a custom component is needed for rendering the result, see configuration in `appConfig.js` below.
+   - `key`: A unique key name.
+   - `title`: The human visible title.
+   - `titleMsgId`: Instead of `title`, a message id for the title which will be looked up in the translations.
+   - `query`: The query to perform to retreive the info. Must return HTML, which is then rendered in an iframe. `$egrid$` is replaced with the EGRID of the current plot. If the specified URL is relative, it is resolved with respect to `plotInfoService` as defined in `config.json`.
    - `pdfQuery`: Optional query to retreive a PDF report, which is then presented as a download the the user. Again, `$egrid$` is replaced with the EGRID of the current plot.
+   - `pdfTooltip`: Message id for the pdf button tooltip.
    - `urlKey`: Optional query parameter key name. If QWC2 is started with `<urlKey>=<egrid>` in the URL, the plot info tool is automatically enabled and the respective query performed.
+   - `cfg`: Arbitrary custom config to pass to a custom component, see `appConfig.js` configuration below.
 
 **`appConfig.js` configuration:**
 
@@ -41,28 +48,23 @@ Sample `PlotInfoToolPlugin` configuration, as can be defined in the `cfg` sectio
 
     PlotInfoToolPlugin: {
       themeLayerRestorer: require('./themeLayerRestorer'),
-      oerebQueryFormat: 'xml',
-      infoPlugins: [{
-        "key": "test",
-        "title": "Test plugin",
-        "query": "https://example.com/data.json",
-        "pdfQuery": null,
-        "urlKey": "null",
-        "component": require('./plugins/PlotInfoTestPlugin')
-      }]
+      customInfoComponents: {
+        "<key>": require('./plugins/CustomPlotInfoComponent'),
+        ...
+      }
     }
-    
+
  * `themeLayerRestorer`: Function which restores theme layers, used for loading the `toolLayers` specified in the configuration in `config.json`. See `themeLayerRestorer` in the [sample `appConfig.js`](https://github.com/qgis/qwc2-demo-app/blob/master/js/appConfig.js).
- * `oerebQueryFormat`: Format of data returned by the OEREB backend one wishes to use, either `xml` or `json`.
- * `infoPlugins`: Customized info plugins. Differently from the `infoQueries` in `config.json`, these render a custom component, instead of static HTML in an iframe. A minimal plugin component:
- 
-       class PlotInfoTestPlugin extends React.Component {
+ * `customInfoComponents`: Customized components for rendering plot info query results. The `key` specifies a the info query for which this component should be used, as specified in `infoQueries` in config.json (see above). An example of a minimal custom component:
+
+       class CustomPlotInfoComponent extends React.Component {
          static propTypes = {
-           data: PropTypes.object // PropType according to format of data returned by the specified query URL
+           data: PropTypes.object, // PropType according to format of data returned by the specified query URL
+           config: PropTypes.object // Custom configuration
          }
          render() {
            return (<div>{this.props.data.field}</div>);
          }
        };
 
-       module.exports = PlotInfoTestPlugin;
+       module.exports = CustomPlotInfoComponent;
