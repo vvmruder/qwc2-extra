@@ -346,7 +346,7 @@ class OerebDocument extends React.Component {
                 queryable: false,
                 boundingBox: params.BBOX,
                 visibility: true,
-                opacity: 255,
+                opacity: entry.Map.layerOpacity !== undefined ? this.ensureNumber(entry.Map.layerOpacity) * 255 : 255,
                 format: params.FORMAT,
                 params: {LAYERS: params.LAYERS},
                 __oereb_highlight: true,
