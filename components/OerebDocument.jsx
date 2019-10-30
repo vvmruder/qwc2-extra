@@ -271,7 +271,7 @@ class OerebDocument extends React.Component {
                 <h1><Message msgId="oereb.responsibleauthority" /></h1>
                 <table><tbody>
                     <tr>
-                        <td rowSpan="4" style={{verticalAlign: 'top'}}><img src={extract.CantonalLogoRef} /></td>
+                        {(this.props.config || {}).hideLogo ? null : (<td rowSpan="4" style={{verticalAlign: 'top'}}><img src={extract.CantonalLogoRef} /></td>)}
                         <td><b>{this.localizedText(extract.PLRCadastreAuthority.Name)}</b></td>
                     </tr>
                     <tr>
