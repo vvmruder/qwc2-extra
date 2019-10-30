@@ -227,7 +227,7 @@ class OerebDocument extends React.Component {
                                         <td>{this.localizedText(data.Information)}</td>
                                         <td><img src={symbol} /></td>
                                         {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : ( data.LengthShare ? (<td>{data.LengthShare}&nbsp;m</td>) : (<td>-</td>) )}
-                                        {data.PartInPercent ? (<td>{data.PartInPercent.toFixed(2) + "%"}</td>) : (<td>-</td>)}
+                                        {data.PartInPercent ? (<td>{data.PartInPercent.toFixed(1) + "%"}</td>) : (<td>-</td>)}
                                     </tr>
                                 ))}
                             </tbody></table>
