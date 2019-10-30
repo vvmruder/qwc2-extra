@@ -96,9 +96,13 @@ class OerebDocument extends React.Component {
         );
     }
     renderConcernedThemes = (themes) => {
+        let orderedThemes = themes;
+        if(!isEmpty((this.props.config || {}).themes)) {
+            orderedThemes = this.props.config.themes.map(code => themes.find(theme => theme.Code === code)).filter(entry => entry);
+        }
         return (
             <div className="oereb-document-section-concerned-themes">
-                {themes.map(theme => {
+                {orderedThemes.map(theme => {
                     let icon = this.state.expandedTheme === theme.Code ? 'chevron-up' : 'chevron-down';
                     return (
                         <div className="oereb-document-theme" key={theme.Code}>
