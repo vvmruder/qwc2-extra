@@ -139,7 +139,7 @@ class PlotInfoTool extends React.Component {
                         <table key={"result-body-" + idx}><tbody>
                             {plot.fields.map(entry => (
                                 <tr key={entry.key}>
-                                    <td>{entry.key}</td><td><div>{entry.value}</div></td>
+                                    <td>{entry.key}</td><td><div dangerouslySetInnerHTML={{__html: entry.value}}></div></td>
                                 </tr>
                             ))}
                             <tr>
