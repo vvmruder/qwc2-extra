@@ -142,9 +142,6 @@ class PlotInfoTool extends React.Component {
                                     <td>{entry.key}</td><td><div dangerouslySetInnerHTML={{__html: entry.value}}></div></td>
                                 </tr>
                             ))}
-                            <tr>
-                                <td>EGRID</td><td>{entry.egrid}</td>
-                            </tr>
                         </tbody></table>
                 )]))}
                 </div>
