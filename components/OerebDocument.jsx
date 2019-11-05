@@ -262,9 +262,13 @@ class OerebDocument extends React.Component {
         );
     }
     renderOtherThemes = (themes) => {
+        let orderedThemes = themes;
+        if(!isEmpty((this.props.config || {}).themes)) {
+            orderedThemes = this.props.config.themes.map(code => themes.find(theme => theme.Code === code)).filter(entry => entry);
+        }
         return (
             <div className="oereb-document-section-other-themes">
-                {themes.map(theme => (<div key={theme.Code}>{this.localizedText(theme.Text)}</div>))}
+                {orderedThemes.map(theme => (<div key={theme.Code}>{this.localizedText(theme.Text)}</div>))}
             </div>
         );
     }
