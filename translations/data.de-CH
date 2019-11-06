@@ -3,8 +3,7 @@
   "messages": {
     "appmenu": {
       "items": {
-        "PlotInfoTool": "Grundstücksinformation",
-        "PlotInfoTool_comment": "ÖREB-Kataster"
+        "PlotInfoTool": "Grundstücksinformation"
       }
     },
     "oereb": {
