@@ -67,12 +67,16 @@ class PlotInfoTool extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         if(newProps.theme && !this.props.theme) {
-            for(let entry of newProps.infoQueries) {
-                if(entry.urlKey && UrlParams.getParam(entry.urlKey)) {
-                    this.props.setCurrentTask('PlotInfoTool');
-                    this.queryInfoByEgrid(entry, UrlParams.getParam(entry.urlKey));
-                    UrlParams.updateParams({[entry.urlKey]: undefined});
-                    break;
+            if(UrlParams.getParam('oereb') !== undefined) {
+                this.props.setCurrentTask('PlotInfoTool');
+            } else {
+                for(let entry of newProps.infoQueries) {
+                    if(entry.urlKey && UrlParams.getParam(entry.urlKey)) {
+                        this.props.setCurrentTask('PlotInfoTool');
+                        this.queryInfoByEgrid(entry, UrlParams.getParam(entry.urlKey));
+                        UrlParams.updateParams({[entry.urlKey]: undefined});
+                        break;
+                    }
                 }
             }
         } else if(newProps.currentTask === 'PlotInfoTool' && this.props.currentTask !== 'PlotInfoTool') {
