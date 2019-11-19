@@ -67,7 +67,7 @@ class PlotInfoTool extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         if(newProps.theme && !this.props.theme) {
-            if(UrlParams.getParam('oereb') !== undefined) {
+            if(UrlParams.getParam('realty') !== undefined) {
                 this.props.setCurrentTask('PlotInfoTool');
             } else {
                 for(let entry of newProps.infoQueries) {
