@@ -67,7 +67,7 @@ div.plot-info-dialog-query-expanded {
     flex: 1 1 auto;
 }
 
-div.plot-info-dialog-query-expanded:last-child {
+div.plot-info-dialog-query-custom {
     flex: 0 1 auto;
 }
 

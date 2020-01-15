@@ -158,8 +158,9 @@ class PlotInfoTool extends React.Component {
                         let pdfQuery = entry.pdfQuery ? plotServiceUrl + entry.pdfQuery.replace('$egrid$', plot.egrid) : null;
                         let pdfTooltip = entry.pdfTooltip ? LocaleUtils.getMessageById(this.context.messages, entry.pdfTooltip) : "";
                         let expanded = this.state.expandedInfo === entry.key;
+                        let customComponent = expanded ? this.props.customInfoComponents[this.state.expandedInfo] : false;
                         return (
-                            <div key={entry.key} className={"plot-info-dialog-query " + (expanded ? "plot-info-dialog-query-expanded" : '')}>
+                            <div key={entry.key} className={"plot-info-dialog-query " + (expanded ? "plot-info-dialog-query-expanded " : '') + (customComponent ? "plot-info-dialog-query-custom " : '')}>
                                 <div className="plot-info-dialog-query-title" onClick={() => this.toggleEgridInfo(entry, query)}>
                                     <Icon icon={expanded ? "collapse" : "expand"} />
                                     <span>{entry.titleMsgId ? LocaleUtils.getMessageById(this.context.messages, entry.titleMsgId) : entry.title}</span>
