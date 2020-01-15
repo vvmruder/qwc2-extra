@@ -84,6 +84,9 @@ div.plot-info-dialog-query-title {
 div.plot-info-dialog-query-title > span:not(.icon) {
     margin: 0 0.5em;
     flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 div.plot-info-dialog-query-title > span.icon-pdf,
