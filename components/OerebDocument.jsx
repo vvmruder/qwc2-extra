@@ -329,7 +329,7 @@ class OerebDocument extends React.Component {
         }
 
         let extract = this.state.oerebDoc.GetExtractByIdResponse.extract;
-        let landOwnRestr = extract.RealEstate.RestrictionOnLandownership;
+        let landOwnRestr = this.ensureArray(extract.RealEstate.RestrictionOnLandownership);
 
         let {entries, subthemes, isSubTheme} = this.collectConcernedThemes(landOwnRestr, name);
         let subThemeLayers = new Set();
