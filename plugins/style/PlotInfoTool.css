@@ -1,3 +1,12 @@
+div.plot-info-dialog-body {
+    display: flex;
+    flex-direction: column;
+}
+
+div.resizeable-window-body-nonscrollable div.plot-info-dialog-body {
+    height: 100%;
+}
+
 div.plot-info-dialog-header {
     background-color: white;
     border-width: 1px 1px 0 1px ;
@@ -5,6 +14,9 @@ div.plot-info-dialog-header {
     border-color: @item_border@;
     width: 100%;
     font-size: small;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 div.plot-info-result-header {
@@ -13,6 +25,7 @@ div.plot-info-result-header {
     border-color: @item_border@;
     background-color: @button_bg@;
     padding: 0.25em;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
 }
@@ -26,34 +39,44 @@ div.plot-info-result-header > span.icon {
     margin-right: 0.25em;
 }
 
-div.plot-info-dialog-header table {
+div.plot-info-result-body {
+    flex: 0 1 auto;
+    overflow-y: auto;
+}
+
+div.plot-info-result-body table {
     width: 100%;
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: @item_border@;
 }
 
-div.plot-info-dialog-header table td {
+div.plot-info-result-body table td {
     padding: 0.125em 0.25em;
 }
 
-div.plot-info-dialog-header table td div {
+div.plot-info-result-body table td div {
     max-height: 2.8em;
     overflow: auto;
 }
 
-div.plot-info-dialog-query {
-    margin: 0.5em 0;
-    border: 1px solid @item_border@;
+div.plot-info-dialog-queries {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5em;
 }
 
 div.plot-info-dialog-query-title {
-     background-color: @button_bg@;
-     height: 2em;
-     cursor: pointer;
-     display: flex;
-     align-items: center;
-     padding-left: 0.5em;
+    border: 1px solid @item_border@;
+    margin-top: 0.5em;
+    background-color: @button_bg@;
+    height: 2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5em;
+    flex: 0 0 auto;
 }
 
 div.plot-info-dialog-query-title > span:not(.icon) {
@@ -102,8 +125,21 @@ div.plot-info-dialog-query > div:nth-child(2) {
     flex: 1 1 auto;
 }
 
-iframe.plot-info-dialog-query-result {
+div.plot-info-dialog-query-result {
+    border-width: 0 1px 1px 1px;
+    border-color: @item_border@;
+    border-style: solid;
     width: 100%;
-    border: 0;
     background-color: white;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+div.plot-info-dialog-query-result > iframe {
+    min-height: 0;
+    height: 0;
+    width: 100%;
+    flex: 1 1 auto;
+    border: 0;
 }

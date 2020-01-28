@@ -118,9 +118,16 @@ class PlotInfoTool extends React.Component {
         if(!this.state.plotInfo || this.state.plotInfo.length === 0) {
             return null;
         }
+        let scrollable = false;
+        if(this.state.expandedInfo) {
+            let entry = this.props.infoQueries.find(entry => entry.key === this.state.expandedInfo);
+            if(entry) {
+                scrollable = entry.scrollmode === "parent";
+            }
+        }
         return (
             <ResizeableWindow title="appmenu.items.PlotInfoTool" icon="plot_info"
-                onClose={() => this.props.setCurrentTask(null)} scrollable={true}
+                onClose={() => this.props.setCurrentTask(null)} scrollable={scrollable}
                 initialX={0} initialY={0}
                 initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}
             >
@@ -140,13 +147,15 @@ class PlotInfoTool extends React.Component {
                             <span>{entry.label}</span>
                         </div>
                     ), this.state.currentPlot !== idx ? null : (
-                        <table key={"result-body-" + idx}><tbody>
-                            {plot.fields.map(entry => (
-                                <tr key={entry.key}>
-                                    <td dangerouslySetInnerHTML={{__html: entry.key}}></td><td><div dangerouslySetInnerHTML={{__html: entry.value}}></div></td>
-                                </tr>
-                            ))}
-                        </tbody></table>
+                        <div className="plot-info-result-body" key={"result-body-" + idx}>
+                            <table><tbody>
+                                {plot.fields.map(entry => (
+                                    <tr key={entry.key}>
+                                        <td dangerouslySetInnerHTML={{__html: entry.key}}></td><td><div dangerouslySetInnerHTML={{__html: entry.value}}></div></td>
+                                    </tr>
+                                ))}
+                            </tbody></table>
+                    </div>
                 )]))}
                 </div>
                 <div className="plot-info-dialog-queries">
@@ -159,9 +168,9 @@ class PlotInfoTool extends React.Component {
                         let pdfTooltip = entry.pdfTooltip ? LocaleUtils.getMessageById(this.context.messages, entry.pdfTooltip) : "";
                         let expanded = this.state.expandedInfo === entry.key;
                         let customComponent = expanded ? this.props.customInfoComponents[this.state.expandedInfo] : false;
-                        return (
-                            <div key={entry.key} className={"plot-info-dialog-query " + (expanded ? "plot-info-dialog-query-expanded " : '') + (customComponent ? "plot-info-dialog-query-custom " : '')}>
-                                <div className="plot-info-dialog-query-title" onClick={() => this.toggleEgridInfo(entry, query)}>
+                        return [
+                            (
+                                <div key={entry.key + "-title"} className="plot-info-dialog-query-title" onClick={() => this.toggleEgridInfo(entry, query)}>
                                     <Icon icon={expanded ? "collapse" : "expand"} />
                                     <span>{entry.titleMsgId ? LocaleUtils.getMessageById(this.context.messages, entry.titleMsgId) : entry.title}</span>
                                     {entry.pdfQuery ?
@@ -169,13 +178,13 @@ class PlotInfoTool extends React.Component {
                                         (<Icon title={pdfTooltip} icon="pdf" onClick={ev => this.queryPdf(ev, entry, pdfQuery)} />)
                                      : null}
                                 </div>
-                                {expanded ? (
-                                    <div className="plot-info-dialog-query-result">
-                                        {!this.state.expandedInfoData ? this.renderWait() : this.state.expandedInfoData.failed ? this.renderError() : this.renderInfoData()}
-                                    </div>
-                                ) : null}
-                            </div>
-                        );
+                            ),
+                            expanded ? (
+                                <div key={entry.key + "-result"} className="plot-info-dialog-query-result">
+                                    {!this.state.expandedInfoData ? this.renderWait() : this.state.expandedInfoData.failed ? this.renderError() : this.renderInfoData()}
+                                </div>
+                            ) : null
+                        ];
                     })}
                 </div>
             </div>
@@ -210,7 +219,7 @@ class PlotInfoTool extends React.Component {
             let assetsPath = ConfigUtils.getConfigProp("assetsPath");
             let src = assetsPath + "/templates/blank.html";
             return (
-                <iframe className="plot-info-dialog-query-result" src={src} onLoad={ev => this.setIframeContent(ev.target, this.state.expandedInfoData)}></iframe>
+                <iframe src={src} onLoad={ev => this.setIframeContent(ev.target, this.state.expandedInfoData)}></iframe>
             );
         }
         return null;
