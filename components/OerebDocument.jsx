@@ -248,28 +248,20 @@ class OerebDocument extends React.Component {
                         </div>
                     );
                 })}
-                <h1><Message msgId="oereb.regulations" /></h1>
+                {this.renderDocuments(regulations, "oereb.regulations")}
+                {this.renderDocuments(legalbasis, "oereb.legalbasis")}
+                {this.renderDocuments(hints, "oereb.hints")}
+                {this.renderDocuments(respoffices, "oereb.responsibleoffice")}
+            </div>
+        );
+    }
+    renderDocuments = (documents, sectiontitle) => {
+        return isEmpty(documents) ? null : (
+            <div>
+                <h1><Message msgId={sectiontitle} /></h1>
                 <ul>
-                    {Object.values(regulations).map((reg,idx) => (
-                        <li key={"reg" + idx}><a target="_blank" href={reg.link} title={reg.label}>&#128279; {reg.label}</a></li>
-                    ))}
-                </ul>
-                <h1><Message msgId="oereb.legalbasis" /></h1>
-                <ul>
-                    {Object.values(legalbasis).map((leg, idx) => (
-                        <li key={"leg" + idx}><a target="_blank" href={leg.link} title={leg.label}>&#128279; {leg.label}</a></li>
-                    ))}
-                </ul>
-                <h1><Message msgId="oereb.hints" /></h1>
-                <ul>
-                    {Object.values(hints).map((hnt, idx) => (
-                        <li key={"hnt" + idx}><a target="_blank" href={hnt.link} title={hnt.label}>&#128279; {hnt.label}</a></li>
-                    ))}
-                </ul>
-                <h1><Message msgId="oereb.responsibleoffice" /></h1>
-                <ul>
-                    {Object.values(respoffices).map((rof, idx) => (
-                        <li key={"rof" + idx}><a target="_blank" href={rof.link} title={rof.label}>&#128279; {rof.label}</a></li>
+                    {Object.values(documents).map((doc, idx) => (
+                        <li key={"doc" + idx}><a target="_blank" href={doc.link} title={doc.label}>&#128279; {doc.label}</a></li>
                     ))}
                 </ul>
             </div>
