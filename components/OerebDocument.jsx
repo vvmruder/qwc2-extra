@@ -179,6 +179,11 @@ class OerebDocument extends React.Component {
             }
             let subThemeSymbols = legendSymbols[subTheme].symbols;
             if(entry.SymbolRef in subThemeSymbols) {
+                if(subThemeSymbols[entry.SymbolRef].NrOfPoints && entry.NrOfPoints) {
+                    subThemeSymbols[entry.SymbolRef].NrOfPoints += this.ensureNumber(entry.NrOfPoints);
+                } else if(entry.NrOfPoints) {
+                    subThemeSymbols[entry.SymbolRef].NrOfPoints = this.ensureNumber(entry.NrOfPoints);
+                }
                 if(subThemeSymbols[entry.SymbolRef].AreaShare && entry.AreaShare) {
                     subThemeSymbols[entry.SymbolRef].AreaShare += this.ensureNumber(entry.AreaShare);
                 } else if(entry.AreaShare) {
@@ -203,6 +208,7 @@ class OerebDocument extends React.Component {
                 };
             }
         }
+        console.log(legendSymbols);
         return (
             <div className="oereb-document-theme-contents">
                 {subthemes.slice(0).reverse().map((subtheme, idx) => {
@@ -230,14 +236,33 @@ class OerebDocument extends React.Component {
                                     <th><Message msgId="oereb.share" /></th>
                                     <th><Message msgId="oereb.perc" /></th>
                                 </tr>
-                                {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => (
-                                    <tr key={"leg" + jdx}>
-                                        <td>{this.localizedText(data.Information)}</td>
-                                        <td><img src={symbol} /></td>
-                                        {data.AreaShare ? (<td>{data.AreaShare}&nbsp;m<sup>2</sup></td>) : ( data.LengthShare ? (<td>{data.LengthShare}&nbsp;m</td>) : (<td>-</td>) )}
-                                        {data.PartInPercent ? (<td>{data.PartInPercent.toFixed(1) + "%"}</td>) : (<td>-</td>)}
-                                    </tr>
-                                ))}
+                                {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => {
+                                    return [data.NrOfPoints ? (
+                                            <tr key={"sympts" + jdx}>
+                                                <td>{this.localizedText(data.Information)}</td>
+                                                <td><img src={symbol} /></td>
+                                                <td>{data.NrOfPoints}&nbsp;<Message msgId="oereb.nrpoints" /></td>
+                                                <td>-</td>
+                                            </tr>
+                                        ) : null,
+                                        data.LengthShare ? (
+                                            <tr key={"symlen" + jdx}>
+                                                <td>{this.localizedText(data.Information)}</td>
+                                                <td><img src={symbol} /></td>
+                                                <td>{data.LengthShare}&nbsp;m</td>
+                                                {data.PartInPercent ? (<td>{data.PartInPercent.toFixed(1) + "%"}</td>) : (<td>-</td>)}
+                                            </tr>
+                                        ) : null,
+                                        data.AreaShare ? (
+                                            <tr key={"symarea" + jdx}>
+                                                <td>{this.localizedText(data.Information)}</td>
+                                                <td><img src={symbol} /></td>
+                                                <td>{data.AreaShare}&nbsp;m<sup>2</sup></td>
+                                                {data.PartInPercent ? (<td>{data.PartInPercent.toFixed(1) + "%"}</td>) : (<td>-</td>)}
+                                            </tr>
+                                        ) : null
+                                    ];
+                                })}
                             </tbody></table>
                         {subthemedata.fullLegend ? (
                             <div>
