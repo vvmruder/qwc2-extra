@@ -140,6 +140,7 @@ class OerebDocument extends React.Component {
         let {entries, subthemes, isSubTheme} = this.collectConcernedThemes(landOwnRestr, name);
         let regulations = {};
         let legalbasis = {};
+        let hints = {};
         let respoffices = {};
         for(let entry of entries) {
             for(let prov of this.ensureArray(entry.LegalProvisions)) {
@@ -148,10 +149,17 @@ class OerebDocument extends React.Component {
                     link: this.localizedText(prov.TextAtWeb)
                 };
                 for(let ref of this.ensureArray(prov.Reference)) {
-                    legalbasis[this.localizedText(ref.TextAtWeb)] = {
-                        label: this.localizedText(ref.Title) + " (" + this.localizedText(ref.Abbreviation) + ")" + (ref.OfficialNumber ? ", " + ref.OfficialNumber : ""),
-                        link: this.localizedText(ref.TextAtWeb)
-                    };
+                    if(ref.DocumentType === "Law") {
+                        legalbasis[this.localizedText(ref.TextAtWeb)] = {
+                            label: this.localizedText(ref.Title) + " (" + this.localizedText(ref.Abbreviation) + ")" + (ref.OfficialNumber ? ", " + ref.OfficialNumber : ""),
+                            link: this.localizedText(ref.TextAtWeb)
+                        };
+                    } else if(ref.DocumentType === "Hint") {
+                        hints[this.localizedText(ref.TextAtWeb)] = {
+                            label: this.localizedText(ref.Title),
+                            link: this.localizedText(ref.TextAtWeb)
+                        };
+                    }
                 }
                 respoffices[prov.ResponsibleOffice.OfficeAtWeb] = {
                     label: this.localizedText(prov.ResponsibleOffice.Name),
@@ -250,6 +258,12 @@ class OerebDocument extends React.Component {
                 <ul>
                     {Object.values(legalbasis).map((leg, idx) => (
                         <li key={"leg" + idx}><a target="_blank" href={leg.link} title={leg.label}>&#128279; {leg.label}</a></li>
+                    ))}
+                </ul>
+                <h1><Message msgId="oereb.hints" /></h1>
+                <ul>
+                    {Object.values(hints).map((hnt, idx) => (
+                        <li key={"hnt" + idx}><a target="_blank" href={hnt.link} title={hnt.label}>&#128279; {hnt.label}</a></li>
                     ))}
                 </ul>
                 <h1><Message msgId="oereb.responsibleoffice" /></h1>
