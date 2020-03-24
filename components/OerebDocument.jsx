@@ -208,7 +208,6 @@ class OerebDocument extends React.Component {
                 };
             }
         }
-        console.log(legendSymbols);
         return (
             <div className="oereb-document-theme-contents">
                 {subthemes.slice(0).reverse().map((subtheme, idx) => {
