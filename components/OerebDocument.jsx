@@ -168,7 +168,7 @@ class OerebDocument extends React.Component {
             }
         }
         if((this.props.config||{}).responsibleOfficeFromRestriction) {
-            respoffices = landOwnRestr.reduce((res, restr) => {
+            respoffices = entries.reduce((res, restr) => {
                 res[restr.ResponsibleOffice.OfficeAtWeb] = {
                     label: this.localizedText(restr.ResponsibleOffice.Name),
                     link: restr.ResponsibleOffice.OfficeAtWeb
