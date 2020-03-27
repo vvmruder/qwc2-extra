@@ -211,6 +211,7 @@ class OerebDocument extends React.Component {
             } else {
                 subThemeSymbols[entry.SymbolRef] = {
                     Information:entry.Information,
+                    NrOfPoints: this.ensureNumber(entry.NrOfPoints),
                     AreaShare: this.ensureNumber(entry.AreaShare),
                     LengthShare: this.ensureNumber(entry.LengthShare),
                     PartInPercent: this.ensureNumber(entry.PartInPercent)
