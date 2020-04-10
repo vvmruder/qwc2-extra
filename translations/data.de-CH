@@ -8,6 +8,7 @@
     },
     "oereb": {
       "title": "Öffentlich-rechtliche Eigentumsbeschränkungen",
+      "failed": "Fehler beim Laden des OEREB Auszug",
       "concernedThemes": "Betroffene Themen",
       "notConcernedThemes": "Nicht betroffene Themen",
       "themeWithoutData": "Nicht verfügbare Themen",

@@ -6,6 +6,7 @@
     "strings": [
         "appmenu.items.PlotInfoTool",
         "oereb.title",
+        "oereb.failed",
         "oereb.concernedThemes",
         "oereb.notConcernedThemes",
         "oereb.themeWithoutData",

@@ -206,7 +206,7 @@ class PlotInfoTool extends React.Component {
     renderError = () => {
         return (
             <div className="plot-info-dialog-query-failed">
-                <Message msgId="plotinfotool.failed" />
+                <Message msgId={this.state.expandedInfoData.failed === true ? "plotinfotool.failed" : this.state.expandedInfoData.failed} />
             </div>
         );
     }
@@ -300,9 +300,9 @@ class PlotInfoTool extends React.Component {
         } else {
             this.setState({expandedInfo: infoEntry.key, expandedInfoData: null});
             axios.get(queryUrl).then(response => {
-                this.setState({expandedInfoData: response.data});
+                this.setState({expandedInfoData: response.data || {"failed": infoEntry.failMsgId || true}});
             }).catch(e => {
-                this.setState({expandedInfoData: {"failed": true}});
+                this.setState({expandedInfoData: {"failed": infoEntry.failMsgId || true}});
             });
         }
     }
