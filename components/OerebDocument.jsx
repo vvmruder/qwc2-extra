@@ -14,7 +14,7 @@ const isEmpty = require('lodash.isempty');
 const uuid = require('uuid');
 const url = require('url');
 const xml2js = require('xml2js');
-const {LayerRole, addLayer, removeLayer, changeLayerProperties} = require('qwc2/actions/layers');
+const {LayerRole, addLayer, removeLayer, changeLayerProperty} = require('qwc2/actions/layers');
 const LayerUtils = require('qwc2/utils/LayerUtils');
 const Icon = require('qwc2/components/Icon');
 const Message = require("qwc2/components/I18N/Message");
@@ -32,7 +32,7 @@ class OerebDocument extends React.Component {
         ]),
         addLayer: PropTypes.func,
         removeLayer: PropTypes.func,
-        changeLayerProperties: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         config: PropTypes.object
     }
     state = {
@@ -408,8 +408,7 @@ class OerebDocument extends React.Component {
         this.setState({expandedLegend});
     }
     toggleThemeLayer = (subthemelayer) => {
-        let newlayer = assign({}, subthemelayer, {visibility: !subthemelayer.visibility});
-        this.props.changeLayerProperties(subthemelayer.uuid, newlayer);
+        this.props.changeLayerProperty(subthemelayer.uuid, "visibility", !subthemelayer.visibility);
     }
     localizedText = (el) => {
         if(isEmpty(el)) {
@@ -438,5 +437,5 @@ module.exports = connect(state => ({
 }), {
     addLayer: addLayer,
     removeLayer: removeLayer,
-    changeLayerProperties: changeLayerProperties
+    changeLayerProperty: changeLayerProperty
 })(OerebDocument);
