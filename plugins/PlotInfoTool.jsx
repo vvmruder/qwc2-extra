@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const axios = require('axios');
 const FileSaver = require('file-saver');
+const {logAction} = require('qwc2/actions/logging');
 const ConfigUtils = require('qwc2/utils/ConfigUtils');
 const {changeSelectionState} = require('qwc2/actions/selection');
 const {clearSearch} = require('qwc2/actions/search');
@@ -47,7 +48,8 @@ class PlotInfoTool extends React.Component {
         clearSearch: PropTypes.func,
         themeLayerRestorer: PropTypes.func,
         infoQueries: PropTypes.array,
-        customInfoComponents: PropTypes.object
+        customInfoComponents: PropTypes.object,
+        logAction: PropTypes.func
     }
     static defaultProps = {
         toolLayers: [],
@@ -277,6 +279,7 @@ class PlotInfoTool extends React.Component {
         });
     }
     queryPdf = (ev, infoEntry, queryUrl) => {
+        this.props.logAction("PLOTINFO_PDF_QUERY", {info: infoEntry.key});
         ev.stopPropagation();
         this.setState({pendingPdfs: [...this.state.pendingPdfs, queryUrl]});
         axios.get(queryUrl, {responseType: 'blob'}).then(response => {
@@ -298,6 +301,7 @@ class PlotInfoTool extends React.Component {
         if(this.state.expandedInfo === infoEntry.key) {
             this.setState({expandedInfo: null, expandedInfoData: null});
         } else {
+            this.props.logAction("PLOTINFO_QUERY", {info: infoEntry.key});
             this.setState({expandedInfo: infoEntry.key, expandedInfoData: null});
             axios.get(queryUrl).then(response => {
                 this.setState({expandedInfoData: response.data || {"failed": infoEntry.failMsgId || true}});
@@ -325,7 +329,8 @@ module.exports = {
             addLayerFeatures: addLayerFeatures,
             removeLayer: removeLayer,
             zoomToPoint: zoomToPoint,
-            clearSearch: clearSearch
+            clearSearch: clearSearch,
+            logAction: logAction
         }
     )(PlotInfoTool),
     reducers: {
