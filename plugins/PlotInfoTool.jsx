@@ -294,7 +294,8 @@ class PlotInfoTool extends React.Component {
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
         }).catch(e => {
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
-            alert("Print failed");
+            let errorMsg = infoEntry.failMsgId ? LocaleUtils.getMessageById(this.context.messages, infoEntry.failMsgId) : "";
+            alert(errorMsg || "Print failed");
         });
     }
     toggleEgridInfo = (infoEntry, queryUrl) => {
