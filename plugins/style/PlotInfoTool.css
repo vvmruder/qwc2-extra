@@ -138,7 +138,6 @@ div.plot-info-dialog-query-result {
 
 div.plot-info-dialog-query-result > iframe {
     min-height: 0;
-    height: 0;
     width: 100%;
     flex: 1 1 auto;
     border: 0;
