@@ -29,6 +29,7 @@
       "showfulllegend": "Show full legend"
     },
     "plotdescr": {
+      "title": "Plot description",
       "requestPdf": "Create land register plan (PDF)"
     },
     "plotinfotool": {
