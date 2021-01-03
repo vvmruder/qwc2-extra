@@ -18,7 +18,6 @@ import {changeSelectionState} from 'qwc2/actions/selection';
 import {clearSearch} from 'qwc2/actions/search';
 import {setCurrentTask} from 'qwc2/actions/task';
 import {LayerRole, addThemeSublayer, addLayerFeatures, removeLayer} from 'qwc2/actions/layers';
-import Message from 'qwc2/components/I18N/Message';
 import ResizeableWindow from 'qwc2/components/ResizeableWindow';
 import Spinner from 'qwc2/components/Spinner';
 import Icon from 'qwc2/components/Icon';
@@ -56,9 +55,6 @@ class PlotInfoTool extends React.Component {
         infoQueries: [],
         customInfoComponents: {},
         windowSize: {width: 500, height: 800}
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     state = {
         plotInfo: null,
@@ -166,13 +162,13 @@ class PlotInfoTool extends React.Component {
                             query = plotServiceUrl + query;
                         }
                         const pdfQuery = entry.pdfQuery ? plotServiceUrl + entry.pdfQuery.replace('$egrid$', plot.egrid) : null;
-                        const pdfTooltip = entry.pdfTooltip ? LocaleUtils.getMessageById(this.context.messages, entry.pdfTooltip) : "";
+                        const pdfTooltip = entry.pdfTooltip ? LocaleUtils.tr(entry.pdfTooltip) : "";
                         const expanded = this.state.expandedInfo === entry.key;
                         return [
                             (
                                 <div className="plot-info-dialog-query-title" key={entry.key + "-title"} onClick={() => this.toggleEgridInfo(entry, query)}>
                                     <Icon icon={expanded ? "collapse" : "expand"} />
-                                    <span>{entry.titleMsgId ? LocaleUtils.getMessageById(this.context.messages, entry.titleMsgId) : entry.title}</span>
+                                    <span>{entry.titleMsgId ? LocaleUtils.tr(entry.titleMsgId) : entry.title}</span>
                                     {entry.pdfQuery ?
                                         this.state.pendingPdfs.includes(pdfQuery) ? (<Spinner />) :
                                         (<Icon title={pdfTooltip} icon="pdf" onClick={ev => this.queryPdf(ev, entry, pdfQuery)} />)
@@ -199,14 +195,14 @@ class PlotInfoTool extends React.Component {
         return (
             <div className="plot-info-dialog-query-loading">
                 <Spinner />
-                <Message msgId="plotinfotool.loading" />
+                <span>{LocaleUtils.tr("plotinfotool.loading")}</span>
             </div>
         );
     }
     renderError = () => {
         return (
             <div className="plot-info-dialog-query-failed">
-                <Message msgId={this.state.expandedInfoData.failed === true ? "plotinfotool.failed" : this.state.expandedInfoData.failed} />
+                {this.state.expandedInfoData.failed === true ? LocaleUtils.tr("plotinfotool.failed") : LocaleUtils.tr(this.state.expandedInfoData.failed)}
             </div>
         );
     }
@@ -292,7 +288,7 @@ class PlotInfoTool extends React.Component {
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
         }).catch(() => {
             this.setState({pendingPdfs: this.state.pendingPdfs.filter(entry => entry !== queryUrl)});
-            const errorMsg = infoEntry.failMsgId ? LocaleUtils.getMessageById(this.context.messages, infoEntry.failMsgId) : "";
+            const errorMsg = infoEntry.failMsgId ? LocaleUtils.tr(infoEntry.failMsgId) : "";
             alert(errorMsg || "Print failed");
         });
     }

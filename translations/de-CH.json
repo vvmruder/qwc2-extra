@@ -1,40 +1,39 @@
 {
   "locale": "de-DE",
   "messages": {
+    "oereb": {
+      "concernedThemes": "Betroffene Themen",
+      "fundations": "Grundlagedaten",
+      "generalInformation": "Allgemeine und rechtliche Informationen",
+      "generalinfo": "Allgemeine Informationen",
+      "hidefulllegend": "Vollständige Legende ausblenden",
+      "hints": "Weitere Informationen und Hinweise",
+      "legalbasis": "Gesetzliche Grundlagen",
+      "notConcernedThemes": "Nicht betroffene Themen",
+      "nrpoints": "Punkt(e)",
+      "perc": "Anteil in %",
+      "regulations": "Rechtsvorschriften",
+      "responsibleauthority": "Katasterverantwortliche Stelle",
+      "responsibleoffice": "Zuständige Stelle",
+      "share": "Anteil",
+      "showfulllegend": "Vollständige Legende einblenden",
+      "themeWithoutData": "Nicht verfügbare Themen",
+      "type": "Typ",
+      "title": "Öffentlich-rechtliche Eigentumsbeschränkungen",
+      "failed": "Fehler beim Laden des OEREB Auszug"
+    },
+    "plotinfotool": {
+      "failed": "Datenabfrage gescheitert",
+      "loading": "Daten werden geladen..."
+    },
     "appmenu": {
       "items": {
         "PlotInfoTool": "Grundstücksinformation"
       }
     },
-    "oereb": {
-      "title": "Öffentlich-rechtliche Eigentumsbeschränkungen",
-      "failed": "Fehler beim Laden des OEREB Auszug",
-      "concernedThemes": "Betroffene Themen",
-      "notConcernedThemes": "Nicht betroffene Themen",
-      "themeWithoutData": "Nicht verfügbare Themen",
-      "generalInformation": "Allgemeine und rechtliche Informationen",
-      "type": "Typ",
-      "share": "Anteil",
-      "perc": "Anteil in %",
-      "regulations": "Rechtsvorschriften",
-      "legalbasis": "Gesetzliche Grundlagen",
-      "hints": "Weitere Informationen und Hinweise",
-      "nrpoints": "Punkt(e)",
-      "responsibleoffice": "Zuständige Stelle",
-      "responsibleauthority": "Katasterverantwortliche Stelle",
-      "requestPdf": "PDF-Katasterauszug anfordern",
-      "fundations": "Grundlagedaten",
-      "generalinfo": "Allgemeine Informationen",
-      "hidefulllegend": "Vollständige Legende ausblenden",
-      "showfulllegend": "Vollständige Legende einblenden"
-    },
     "plotdescr": {
       "title": "Grundstücksbeschrieb",
       "requestPdf": "Grundbuchplan (PDF) erstellen"
-    },
-    "plotinfotool": {
-      "loading": "Daten werden geladen...",
-      "failed": "Datenabfrage gescheitert"
     }
   }
 }

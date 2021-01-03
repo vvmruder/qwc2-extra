@@ -2,32 +2,33 @@
   "languages": [
     "de-CH",
     "en-US"
-    ],
-    "strings": [
-        "appmenu.items.PlotInfoTool",
-        "oereb.title",
-        "oereb.failed",
-        "oereb.concernedThemes",
-        "oereb.notConcernedThemes",
-        "oereb.themeWithoutData",
-        "oereb.generalInformation",
-        "oereb.type",
-        "oereb.share",
-        "oereb.perc",
-        "oereb.regulations",
-        "oereb.legalbasis",
-        "oereb.hints",
-        "oereb.nrpoints",
-        "oereb.responsibleoffice",
-        "oereb.responsibleauthority",
-        "oereb.requestPdf",
-        "oereb.fundations",
-        "oereb.generalinfo",
-        "oereb.hidefulllegend",
-        "oereb.showfulllegend",
-        "plotdescr.title",
-        "plotdescr.requestPdf",
-        "plotinfotool.loading",
-        "plotinfotool.failed"
-    ]
+  ],
+  "strings": [
+    "oereb.concernedThemes",
+    "oereb.fundations",
+    "oereb.generalInformation",
+    "oereb.generalinfo",
+    "oereb.hidefulllegend",
+    "oereb.hints",
+    "oereb.legalbasis",
+    "oereb.notConcernedThemes",
+    "oereb.nrpoints",
+    "oereb.perc",
+    "oereb.regulations",
+    "oereb.responsibleauthority",
+    "oereb.responsibleoffice",
+    "oereb.share",
+    "oereb.showfulllegend",
+    "oereb.themeWithoutData",
+    "oereb.type",
+    "plotinfotool.failed",
+    "plotinfotool.loading"
+  ],
+  "extra_strings": [
+    "appmenu.items.PlotInfoTool",
+    "oereb.title",
+    "oereb.failed",
+    "plotdescr.title",
+    "plotdescr.requestPdf"
+  ]
 }

@@ -14,7 +14,7 @@ import url from 'url';
 import xml2js from 'xml2js';
 import {LayerRole, addLayer, removeLayer, changeLayerProperty} from 'qwc2/actions/layers';
 import Icon from 'qwc2/components/Icon';
-import Message from 'qwc2/components/I18N/Message';
+import LocaleUtils from 'qwc2/utils/LocaleUtils';
 require('./style/OerebDocument.css');
 
 const Lang = "de";
@@ -71,14 +71,14 @@ class OerebDocument extends React.Component {
         const extract = this.state.oerebDoc.GetExtractByIdResponse.extract;
         return (
             <div className="oereb-document">
-                {this.renderSection("concernedThemes", this.renderConcernedThemes, this.ensureArray(extract.ConcernedTheme))}
-                {this.renderSection("notConcernedThemes", this.renderOtherThemes, this.ensureArray(extract.NotConcernedTheme))}
-                {this.renderSection("themeWithoutData", this.renderOtherThemes, this.ensureArray(extract.ThemeWithoutData))}
-                {this.renderSection("generalInformation", this.renderGeneralInformation, extract)}
+                {this.renderSection("concernedThemes", LocaleUtils.trmsg("oereb.concernedThemes"), this.renderConcernedThemes, this.ensureArray(extract.ConcernedTheme))}
+                {this.renderSection("notConcernedThemes", LocaleUtils.trmsg("oereb.notConcernedThemes"), this.renderOtherThemes, this.ensureArray(extract.NotConcernedTheme))}
+                {this.renderSection("themeWithoutData", LocaleUtils.trmsg("oereb.themeWithoutData"), this.renderOtherThemes, this.ensureArray(extract.ThemeWithoutData))}
+                {this.renderSection("generalInformation", LocaleUtils.trmsg("oereb.generalInformation"), this.renderGeneralInformation, extract)}
             </div>
         );
     }
-    renderSection = (name, renderer, data) => {
+    renderSection = (name, titlemsgid, renderer, data) => {
         if (isEmpty(data)) {
             return null;
         }
@@ -86,7 +86,7 @@ class OerebDocument extends React.Component {
         return (
             <div className="oereb-document-section">
                 <div className="oereb-document-section-title" onClick={() => this.toggleSection(name)}>
-                    <Message msgId={"oereb." + name} />
+                    <span>{LocaleUtils.tr(titlemsgid)}</span>
                     <span>{data.length}&nbsp;<Icon icon={icon} /></span>
                 </div>
                 {this.state.expandedSection === name ? renderer(data) : null}
@@ -228,7 +228,7 @@ class OerebDocument extends React.Component {
                         );
                     }
                     const fullLegendId = this.state.expandedTheme + "_" + (subtheme || "");
-                    const toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? "oereb.hidefulllegend" : "oereb.showfulllegend";
+                    const toggleLegendMsgId = this.state.expandedLegend === fullLegendId ? LocaleUtils.trmsg("oereb.hidefulllegend") : LocaleUtils.trmsg("oereb.showfulllegend");
                     const subThemeLayer = this.props.layers.find(layer => layer.__oereb_subtheme === subtheme);
                     return (
                         <div className="oereb-document-subtheme-container" key={"subtheme" + idx}>
@@ -238,17 +238,17 @@ class OerebDocument extends React.Component {
                             </div>) : null}
                             <table><tbody>
                                 <tr>
-                                    <th><Message msgId="oereb.type" /></th>
+                                    <th>{LocaleUtils.tr("oereb.type")}</th>
                                     <th />
-                                    <th><Message msgId="oereb.share" /></th>
-                                    <th><Message msgId="oereb.perc" /></th>
+                                    <th>{LocaleUtils.tr("oereb.share")}</th>
+                                    <th>{LocaleUtils.tr("oereb.perc")}</th>
                                 </tr>
                                 {Object.entries(subthemedata.symbols).map(([symbol, data], jdx) => {
                                     return [data.NrOfPoints ? (
                                         <tr key={"sympts" + jdx}>
                                             <td>{this.localizedText(data.Information)}</td>
                                             <td><img src={symbol} /></td>
-                                            <td>{data.NrOfPoints}&nbsp;<Message msgId="oereb.nrpoints" /></td>
+                                            <td>{data.NrOfPoints}&nbsp;{LocaleUtils.tr("oereb.nrpoints")}</td>
                                             <td>-</td>
                                         </tr>
                                     ) : null,
@@ -272,24 +272,26 @@ class OerebDocument extends React.Component {
                             </tbody></table>
                             {subthemedata.fullLegend ? (
                                 <div>
-                                    <div className="oereb-document-toggle-fulllegend" onClick={() => this.toggleFullLegend(fullLegendId)}><a><Message msgId={toggleLegendMsgId} /></a></div>
+                                    <div className="oereb-document-toggle-fulllegend" onClick={() => this.toggleFullLegend(fullLegendId)}>
+                                        <a>{LocaleUtils.tr(toggleLegendMsgId)}</a>
+                                    </div>
                                     {this.state.expandedLegend === fullLegendId ? (<div className="oereb-document-fulllegend"><img src={subthemedata.fullLegend} /></div>) : null}
                                 </div>
                             ) : null}
                         </div>
                     );
                 })}
-                {this.renderDocuments(regulations, "oereb.regulations")}
-                {this.renderDocuments(legalbasis, "oereb.legalbasis")}
-                {this.renderDocuments(hints, "oereb.hints")}
-                {this.renderDocuments(respoffices, "oereb.responsibleoffice")}
+                {this.renderDocuments(regulations, LocaleUtils.trmsg("oereb.regulations"))}
+                {this.renderDocuments(legalbasis, LocaleUtils.trmsg("oereb.legalbasis"))}
+                {this.renderDocuments(hints, LocaleUtils.trmsg("oereb.hints"))}
+                {this.renderDocuments(respoffices, LocaleUtils.trmsg("oereb.responsibleoffice"))}
             </div>
         );
     }
     renderDocuments = (documents, sectiontitle) => {
         return isEmpty(documents) ? null : (
             <div>
-                <h1><Message msgId={sectiontitle} /></h1>
+                <h1>{LocaleUtils.tr(sectiontitle)}</h1>
                 <ul>
                     {Object.values(documents).map((doc, idx) => (
                         <li key={"doc" + idx}><a href={doc.link} rel="noopener noreferrer" target="_blank" title={doc.label}>&#128279; {doc.label}</a></li>
@@ -312,7 +314,7 @@ class OerebDocument extends React.Component {
     renderGeneralInformation = (extract) => {
         return (
             <div className="oereb-document-section-general-info">
-                <h1><Message msgId="oereb.responsibleauthority" /></h1>
+                <h1>{LocaleUtils.tr("oereb.responsibleauthority")}</h1>
                 <table><tbody>
                     <tr>
                         {(this.props.config || {}).hideLogo ? null : (<td rowSpan="4" style={{verticalAlign: 'top'}}><img src={extract.CantonalLogoRef} /></td>)}
@@ -328,9 +330,9 @@ class OerebDocument extends React.Component {
                         <td><a href={extract.PLRCadastreAuthority.OfficeAtWeb} rel="noopener noreferrer" target="_blank">{extract.PLRCadastreAuthority.OfficeAtWeb}</a></td>
                     </tr>
                 </tbody></table>
-                <h1><Message msgId="oereb.fundations" /></h1>
+                <h1>{LocaleUtils.tr("oereb.fundations")}</h1>
                 <p>{this.localizedText(extract.BaseData)}</p>
-                <h1><Message msgId="oereb.generalinfo" /></h1>
+                <h1>{LocaleUtils.tr("oereb.generalinfo")}</h1>
                 <p>{this.localizedText(extract.GeneralInformation)}</p>
                 {this.ensureArray(extract.ExclusionOfLiability).map((entry, idx) => [
                     (<h1 key={"disclt" + idx}>{this.localizedText(entry.Title)}</h1>),

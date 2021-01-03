@@ -1,40 +1,39 @@
 {
   "locale": "en-US",
   "messages": {
+    "oereb": {
+      "concernedThemes": "Concerned themes",
+      "fundations": "Fundations",
+      "generalInformation": "General and legal information",
+      "generalinfo": "General information",
+      "hidefulllegend": "Hide full legend",
+      "hints": "Additional information and hints",
+      "legalbasis": "Legal bases",
+      "notConcernedThemes": "Not concerned themes",
+      "nrpoints": "point(s)",
+      "perc": "Share in %",
+      "regulations": "Regulations",
+      "responsibleauthority": "Responsible authority",
+      "responsibleoffice": "Responsible office",
+      "share": "Share",
+      "showfulllegend": "Show full legend",
+      "themeWithoutData": "Themes without data",
+      "type": "Type",
+      "title": "ÖREB cadastre",
+      "failed": "Failed to load OEREB extract"
+    },
+    "plotinfotool": {
+      "failed": "Failed to load data",
+      "loading": "Loading data..."
+    },
     "appmenu": {
       "items": {
         "PlotInfoTool": "Real Estate Information"
       }
     },
-    "oereb": {
-      "title": "ÖREB cadastre",
-      "failed": "Failed to load OEREB extract",
-      "concernedThemes": "Concerned themes",
-      "notConcernedThemes": "Not concerned themes",
-      "themeWithoutData": "Themes without data",
-      "generalInformation": "General and legal information",
-      "type": "Type",
-      "share": "Share",
-      "perc": "Share in %",
-      "regulations": "Regulations",
-      "legalbasis": "Legal bases",
-      "hints": "Additional information and hints",
-      "nrpoints": "point(s)",
-      "responsibleoffice": "Responsible office",
-      "responsibleauthority": "Responsible authority",
-      "requestPdf": "Request PDF cadastre extract",
-      "fundations": "Fundations",
-      "generalinfo": "General information",
-      "hidefulllegend": "Hide full legend",
-      "showfulllegend": "Show full legend"
-    },
     "plotdescr": {
       "title": "Plot description",
       "requestPdf": "Create land register plan (PDF)"
-    },
-    "plotinfotool": {
-      "loading": "Loading data...",
-      "failed": "Failed to load data"
     }
   }
 }
