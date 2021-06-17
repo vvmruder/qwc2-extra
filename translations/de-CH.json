@@ -1,0 +1,23 @@
+{
+  "locale": "de-CH",
+  "messages": {
+    "identify": {
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
+    "infotool": {
+      "clickhelpPoint": "",
+      "clickhelpPolygon": ""
+    },
+    "oereb": {
+      "fundations": "",
+      "generalinfo": "",
+      "nrpoints": "",
+      "perc": "",
+      "responsibleauthority": "",
+      "share": "",
+      "type": ""
+    }
+  }
+}

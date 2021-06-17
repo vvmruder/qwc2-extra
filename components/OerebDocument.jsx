@@ -6,19 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const uuid = require('uuid');
-const url = require('url');
-const xml2js = require('xml2js');
-const {LayerRole, addLayer, removeLayer, changeLayerProperty} = require('qwc2/actions/layers');
-const LayerUtils = require('qwc2/utils/LayerUtils');
-const Icon = require('qwc2/components/Icon');
-const Message = require("qwc2/components/I18N/Message");
-require('./style/OerebDocument.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import uuid from 'uuid';
+import url from 'url';
+import xml2js from 'xml2js';
+import {LayerRole, addLayer, removeLayer, changeLayerProperty} from 'qwc2/actions/layers';
+import LayerUtils from 'qwc2/utils/LayerUtils';
+import Icon from 'qwc2/components/Icon';
+import LocaleUtils from 'qwc2/utils/LocaleUtils';
+import './style/OerebDocument.css';
 
 const DataNS = "http://schemas.geo.admin.ch/V_D/OeREB/1.0/ExtractData";
 const Lang = "de";
@@ -88,7 +88,7 @@ class OerebDocument extends React.Component {
         return (
             <div className="oereb-document-section">
                 <div className="oereb-document-section-title" onClick={ev => this.toggleSection(name)}>
-                    <Message msgId={"oereb." + name} />
+                    {LocaleUtils.tr("oereb." + name)}
                     <span>{data.length}&nbsp;<Icon icon={icon} /></span>
                 </div>
                 {this.state.expandedSection === name ? renderer(data) : null}
@@ -240,17 +240,17 @@ class OerebDocument extends React.Component {
                             </div>) : null}
                             <table><tbody>
                                 <tr>
-                                    <th><Message msgId="oereb.type" /></th>
+                                    <th>{LocaleUtils.tr("oereb.type")}</th>
                                     <th></th>
-                                    <th><Message msgId="oereb.share" /></th>
-                                    <th><Message msgId="oereb.perc" /></th>
+                                    <th>{LocaleUtils.tr("oereb.share")}</th>
+                                    <th>{LocaleUtils.tr("oereb.perc")}</th>
                                 </tr>
                                 {Object.entries(subthemedata.symbols).map(([symbol, data],jdx) => {
                                     return [data.NrOfPoints ? (
                                             <tr key={"sympts" + jdx}>
                                                 <td>{this.localizedText(data.Information)}</td>
                                                 <td><img src={symbol} /></td>
-                                                <td>{data.NrOfPoints}&nbsp;<Message msgId="oereb.nrpoints" /></td>
+                                                <td>{data.NrOfPoints}&nbsp;{LocaleUtils.tr("oereb.nrpoints")}</td>
                                                 <td>-</td>
                                             </tr>
                                         ) : null,
@@ -275,7 +275,7 @@ class OerebDocument extends React.Component {
                             </tbody></table>
                         {subthemedata.fullLegend ? (
                             <div>
-                                <div className="oereb-document-toggle-fulllegend" onClick={ev => this.toggleFullLegend(fullLegendId)}><a><Message msgId={toggleLegendMsgId} /></a></div>
+                                <div className="oereb-document-toggle-fulllegend" onClick={ev => this.toggleFullLegend(fullLegendId)}><a>{LocaleUtils.tr(toggleLegendMsgId)}</a></div>
                                 {this.state.expandedLegend === fullLegendId ? (<div className="oereb-document-fulllegend"><img src={subthemedata.fullLegend} /></div>) : null}
                             </div>
                         ) : null}
@@ -292,7 +292,7 @@ class OerebDocument extends React.Component {
     renderDocuments = (documents, sectiontitle) => {
         return isEmpty(documents) ? null : (
             <div>
-                <h1><Message msgId={sectiontitle} /></h1>
+                <h1>{LocaleUtils.tr(sectiontitle)}</h1>
                 <ul>
                     {Object.values(documents).map((doc, idx) => (
                         <li key={"doc" + idx}><a target="_blank" href={doc.link} title={doc.label}>&#128279; {doc.label}</a></li>
@@ -315,7 +315,7 @@ class OerebDocument extends React.Component {
     renderGeneralInformation = (extract) => {
         return (
             <div className="oereb-document-section-general-info">
-                <h1><Message msgId="oereb.responsibleauthority" /></h1>
+                <h1>{LocaleUtils.tr("oereb.responsibleauthority")}</h1>
                 <table><tbody>
                     <tr>
                         {(this.props.config || {}).hideLogo ? null : (<td rowSpan="4" style={{verticalAlign: 'top'}}><img src={extract.CantonalLogoRef} /></td>)}
@@ -331,9 +331,9 @@ class OerebDocument extends React.Component {
                         <td><a target="_blank" href={extract.PLRCadastreAuthority.OfficeAtWeb}>{extract.PLRCadastreAuthority.OfficeAtWeb}</a></td>
                     </tr>
                 </tbody></table>
-                <h1><Message msgId="oereb.fundations" /></h1>
+                <h1>{LocaleUtils.tr("oereb.fundations")}</h1>
                 <p>{this.localizedText(extract.BaseData)}</p>
-                <h1><Message msgId="oereb.generalinfo" /></h1>
+                <h1>{LocaleUtils.tr("oereb.generalinfo")}</h1>
                 <p>{this.localizedText(extract.GeneralInformation)}</p>
                 {this.ensureArray(extract.ExclusionOfLiability).map((entry, idx) => [
                     (<h1 key={"disclt" + idx}>{this.localizedText(entry.Title)}</h1>),
@@ -432,7 +432,7 @@ class OerebDocument extends React.Component {
     }
 };
 
-module.exports = connect(state => ({
+export default connect(state => ({
     layers: state.layers.flat
 }), {
     addLayer: addLayer,
