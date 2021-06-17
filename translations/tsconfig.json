@@ -4,6 +4,11 @@
     "en-US"
   ],
   "strings": [
+    "identify.noresults",
+    "identify.querying",
+    "identify.title",
+    "infotool.clickhelpPoint",
+    "infotool.clickhelpPolygon",
     "oereb.concernedThemes",
     "oereb.fundations",
     "oereb.generalInformation",
@@ -20,9 +25,7 @@
     "oereb.share",
     "oereb.showfulllegend",
     "oereb.themeWithoutData",
-    "oereb.type",
-    "plotinfotool.failed",
-    "plotinfotool.loading"
+    "oereb.type"
   ],
   "extra_strings": [
     "appmenu.items.PlotInfoTool",

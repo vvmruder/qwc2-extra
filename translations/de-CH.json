@@ -1,6 +1,15 @@
 {
   "locale": "de-DE",
   "messages": {
+    "identify": {
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
+    "infotool": {
+      "clickhelpPoint": "",
+      "clickhelpPolygon": ""
+    },
     "oereb": {
       "concernedThemes": "Betroffene Themen",
       "fundations": "Grundlagedaten",
@@ -21,10 +30,6 @@
       "type": "Typ",
       "title": "Öffentlich-rechtliche Eigentumsbeschränkungen",
       "failed": "Fehler beim Laden des OEREB Auszug"
-    },
-    "plotinfotool": {
-      "failed": "Datenabfrage gescheitert",
-      "loading": "Daten werden geladen..."
     },
     "appmenu": {
       "items": {

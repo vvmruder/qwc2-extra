@@ -1,6 +1,15 @@
 {
   "locale": "en-US",
   "messages": {
+    "identify": {
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
+    "infotool": {
+      "clickhelpPoint": "",
+      "clickhelpPolygon": ""
+    },
     "oereb": {
       "concernedThemes": "Concerned themes",
       "fundations": "Fundations",
@@ -21,10 +30,6 @@
       "type": "Type",
       "title": "ÖREB cadastre",
       "failed": "Failed to load OEREB extract"
-    },
-    "plotinfotool": {
-      "failed": "Failed to load data",
-      "loading": "Loading data..."
     },
     "appmenu": {
       "items": {
